@@ -1,44 +1,52 @@
-import React, { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState, useRef } from 'react';
 
 interface TimerProps {
     onTimeout: () => void;
     isPlayerTurn: boolean;
+    minutes: number;
+    seconds: number;
 }
 
-const Timer: FC<TimerProps> = ({ onTimeout, isPlayerTurn }) => {
-    const [seconds, setSeconds] = useState(120);
+const Timer: FC<TimerProps> = ({ onTimeout, isPlayerTurn, minutes, seconds }) => {
+    const [isFlashing, setIsFlashing] = useState(false);
+    const tickingSoundRef = useRef<HTMLAudioElement | null>(null);
 
     useEffect(() => {
-        let intervalId: number;
-
-        if (isPlayerTurn) {
-            intervalId = window.setInterval(() => {
-                setSeconds((prevSeconds) => (prevSeconds > 0 ? prevSeconds - 1 : 0));
-            }, 1000);
+        if (minutes === 0 && seconds <= 10) {
+            setIsFlashing(true);
+        } else {
+            setIsFlashing(false);
         }
+    }, [minutes, seconds]);
 
-        return () => clearInterval(intervalId);
-    }, [isPlayerTurn]);
+    const playTickingSound = () => {
+        if (tickingSoundRef.current) {
+            tickingSoundRef.current.play();
+        }
+    };
+
+    const stopTickingSound = () => {
+        if (tickingSoundRef.current) {
+            tickingSoundRef.current.pause();
+            tickingSoundRef.current.currentTime = 0;
+        }
+    };
 
     useEffect(() => {
-        if (seconds === 0 && isPlayerTurn) {
-            onTimeout();
+        // Play ticking sound when flashing and player's turn
+        if (isFlashing && isPlayerTurn) {
+            playTickingSound();
+        } else {
+            stopTickingSound();
         }
-    }, [seconds, isPlayerTurn, onTimeout]);
-
-    const formatTime = (time: number): string => {
-        const minutes = Math.floor(time / 60);
-        const remainingSeconds = time % 60;
-        return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
-    };
-
-    const timerStyle: React.CSSProperties = {
-        color: seconds <= 10 && isPlayerTurn ? 'red' : 'inherit',
-    };
+    }, [isFlashing, isPlayerTurn]);
 
     return (
-        <div style={timerStyle}>
-            <p>Осталось времени: {formatTime(seconds)}</p>
+        <div style={{ color: isFlashing && isPlayerTurn ? 'red' : 'inherit' }}>
+            <p>
+                Осталось времени: {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
+            </p>
+            <audio ref={tickingSoundRef} src="src/assets/audio/tic.mp3" />
         </div>
     );
 };
