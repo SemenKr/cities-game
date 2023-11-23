@@ -7,7 +7,7 @@ interface TimerProps {
     seconds: number;
 }
 
-const Timer: FC<TimerProps> = ({ onTimeout, isPlayerTurn, minutes, seconds }) => {
+const Timer: FC<TimerProps> = ({  isPlayerTurn, minutes, seconds }) => {
     const [isFlashing, setIsFlashing] = useState(false);
     const tickingSoundRef = useRef<HTMLAudioElement | null>(null);
 
