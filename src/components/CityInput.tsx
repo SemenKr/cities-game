@@ -4,13 +4,9 @@ import {ChangeEvent, FC, useEffect, useState} from 'react';
 interface CityInputProps {
     onSubmit: (city: string) => void;
     lastLetter: string;
-    validateCity: (city: string) => boolean;
-    validateLastLetter: (city: string) => boolean;
-    isFirstTurn: boolean; // Добавлено
-
 }
 
-const CityInput: FC<CityInputProps> = ({ onSubmit, lastLetter, validateCity, validateLastLetter, isFirstTurn }) => {
+const CityInput: FC<CityInputProps> = ({ onSubmit, lastLetter}) => {
     const [city, setCity] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     useEffect(() => {
@@ -26,16 +22,8 @@ const CityInput: FC<CityInputProps> = ({ onSubmit, lastLetter, validateCity, val
     const handleSubmit = () => {
         const trimmedCity = city.trim();
         if (trimmedCity !== '') {
-            if (validateCity(trimmedCity) && (isFirstTurn || validateLastLetter(trimmedCity))) {
-                onSubmit(trimmedCity);
-                setCity('');
-            } else {
-                let errorText = 'Город не прошел валидацию';
-                if (!isFirstTurn && !validateLastLetter(trimmedCity)) {
-                    errorText += ` или не начинается с буквы "${lastLetter.toUpperCase()}".`;
-                }
-                setErrorMessage(errorText);
-            }
+            onSubmit(trimmedCity);
+            setCity('')
         }
     };
 
