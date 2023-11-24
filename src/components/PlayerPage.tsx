@@ -3,6 +3,7 @@ import Timer from "src/components/Timer.tsx";
 import Chat from "src/components/Chat.tsx";
 import CityInput from "src/components/CityInput.tsx";
 import cityListData from "src/data/CitiesListData.ts";
+import {Progress} from "antd";
 
 
 enum Turn {
@@ -191,6 +192,12 @@ export const PlayerPage: FC<{
                 <Timer onTimeout={handleTimeout} isPlayerTurn={true} minutes={Math.floor(remainingTime / 60)}
                        seconds={remainingTime % 60}/>
             </div>
+            <Progress
+                percent={(remainingTime / TIMER_DURATION_SECONDS) * 100}
+                showInfo={false}
+                strokeColor={'#9e68d0'}
+            />
+
             <div className="chat">
                 <Chat playerCities={playerCities} computerCities={computerCities}/>
             </div>

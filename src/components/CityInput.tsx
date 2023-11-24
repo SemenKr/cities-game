@@ -2,6 +2,7 @@
 import {ChangeEvent, FC, FormEvent, useState} from 'react';
 import cityListData from "src/data/CitiesListData.ts";
 import CitySuggestions from "src/components/CitySuggestions.tsx";
+import {Button, Input, Space} from "antd";
 
 interface CityInputProps {
     onSubmit: (city: string) => void;
@@ -12,6 +13,7 @@ interface CityInputProps {
 const CityInput: FC<CityInputProps> = ({ onSubmit, lastLetter, error }) => {
     const [inputValue, setInputValue] = useState('');
     const [showSuggestions, setShowSuggestions] = useState(false);
+
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
@@ -37,21 +39,21 @@ const CityInput: FC<CityInputProps> = ({ onSubmit, lastLetter, error }) => {
 
     return (
         <form onSubmit={handleFormSubmit}>
-            <input
-                type="text"
-                value={inputValue}
-                onChange={handleInputChange}
-                placeholder={`Enter a city starting with "${lastLetter}"`}
-            />
+
+            <Space.Compact style={{ width: '100%' }}>
+                <Input
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    placeholder={`Enter a city starting with "${lastLetter}"`} />
+                <Button type="primary" >Submit</Button>
+            </Space.Compact>
             {error && <div style={{ color: 'red' }}>{error}</div>} {/* Display error message */}
-            <button type="submit">Submit</button>
             <label>
                 Show Suggestions
                 <input type="checkbox" checked={showSuggestions} onChange={handleCheckboxChange}/>
             </label>
             {showSuggestions &&
                 <CitySuggestions suggestions={filteredCities.slice(0, 10)} onSelect={handleCitySelect}/>}
-
         </form>
     );
 };

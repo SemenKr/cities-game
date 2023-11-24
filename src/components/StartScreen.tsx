@@ -1,4 +1,5 @@
 import {FC} from 'react';
+import {Button} from "antd";
 interface StartScreenProps {
     onStartGame: () => void;
 }
@@ -21,11 +22,11 @@ const StartScreen: FC<StartScreenProps> = ({onStartGame}) => {
                         не&nbsp;вводит слово он&nbsp;считается проигравшим
                     </li>
                 </ul>
-                <button
-                    className={'h-10 px-5 m-3 text-white transition-colors duration-150 bg-purple-500 rounded-lg focus:shadow-outline hover:bg-purple-700'}
+                <Button
+                    type={"primary"}
                     onClick={onStartGame}>
                     Начать игру
-                </button>
+                </Button >
             </div>
         </>
     );

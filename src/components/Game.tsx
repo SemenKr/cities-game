@@ -10,7 +10,13 @@ export const Game: FC = () => {
     const [gameOutcome, setGameOutcome] = useState<'win' | 'loose' | null>(null);
     const onStartGame = () => {
         setGameStarted(true);
+        setGameOutcome(null);
     };
+    const onRestartGame = () => {
+        setGameStarted(false);
+        setGameOutcome(null)
+    };
+
 
     const handleGameOutcome = (outcome: 'win' | 'loose') => {
         setGameOutcome(outcome);
@@ -21,9 +27,9 @@ export const Game: FC = () => {
         <>
             {gameStarted ? (
                 gameOutcome === 'win' ? (
-                    <WinScreen />
+                    <WinScreen onRestart={onRestartGame} />
                 ) : gameOutcome === 'loose' ? (
-                    <LooseScreen />
+                    <LooseScreen onRestart={onRestartGame} />
                 ) : (
                     <PlayerPage onGameOutcome={handleGameOutcome} />
                 )
