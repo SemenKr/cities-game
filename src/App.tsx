@@ -6,7 +6,6 @@ function App() {
 
   return (
     <>
-      <h1>Игра в города</h1>
         <Game />
     </>
   )
