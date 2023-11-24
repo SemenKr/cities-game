@@ -1,4 +1,4 @@
-import {FC, useEffect, useRef, useState} from "react";
+import {FC, useEffect, useRef, useState, useCallback } from "react";
 import Timer from "src/components/Timer.tsx";
 import Chat from "src/components/Chat.tsx";
 import CityInput from "src/components/CityInput.tsx";
@@ -10,22 +10,41 @@ enum Turn {
     Computer = 'Computer',
 }
 
-export const PlayerPage: FC = () => {
+const TIMER_DURATION_SECONDS = 60; // You can adjust the duration as needed
+
+
+export const PlayerPage: FC<{
+    onGameOutcome: (outcome: 'win' | 'loose') => void
+}> = ({ onGameOutcome }) => {
     const [playerCities, setPlayerCities] = useState<string[]>([]);
     const [lastLetter, setLastLetter] = useState<string>(''); // Добавлено
     const [computerCities, setComputerCities] = useState<string[]>([]);
     const [currentTurn, setCurrentTurn] = useState<Turn>(Turn.Player);
     const [isFirstTurn, setIsFirstTurn] = useState(true);
     const [usedCities, setUsedCities] = useState<string[]>([]);
-    const [remainingTime, setRemainingTime] = useState(120); // Время в секундах
+    const [remainingTime, setRemainingTime] = useState(TIMER_DURATION_SECONDS); // Время в секундах
+    const [error, setError] = useState<string>('');
 
 
     const timerRef = useRef<number | undefined>(undefined);
+    const handleTimeout = useCallback(() => {
+        console.log('Время вышло!');
+        // Проверьте текущий ход и установите результат игры соответствующим образом
+        if (currentTurn === Turn.Player) {
+            // Player's turn, so the player loses
+            console.log('Вы проиграли!');
+            onGameOutcome('loose');
+        } else if (currentTurn === Turn.Computer) {
+            // Очередь компьютера, чтобы игрок выиграл
+            console.log('Вы победили!');
+            onGameOutcome('win');
+        }
+        // Дополнительная логика при необходимости
+    }, [currentTurn, onGameOutcome]);
 
-// Внутри компонента PlayerPage
     useEffect(() => {
         // Выполнится только при монтировании компонента
-        setRemainingTime(120);
+        setRemainingTime(TIMER_DURATION_SECONDS);
 
         return () => {
             // Выполнится при размонтировании компонента (например, при завершении игры)
@@ -54,12 +73,8 @@ export const PlayerPage: FC = () => {
             // Выполнится при размонтировании компонента (например, при завершении игры)
             clearInterval(timerRef.current);
         };
-    }, [remainingTime]);
+    }, [remainingTime, handleTimeout]);
 
-    const handleTimeout = () => {
-        // Логика, когда время вышло
-        console.log('Время вышло!');
-    };
 
     const getLastLetter = (city: string): string => {
         // Проверяем, если city равен undefined, null или пустой строке
@@ -69,14 +84,13 @@ export const PlayerPage: FC = () => {
         }
 
         // Проверяем, если город заканчивается на 'ъ' или 'ь' и имеет достаточную длину
-        if (city.length > 1 && (city.endsWith('ъ') || city.endsWith('ь'))) {
+        if (city.length > 1 && (city.endsWith('ъ') || city.endsWith('ь') || city.endsWith('ы'))) {
             return city[city.length - 2].toUpperCase();
         }
 
         // Возвращаем последнюю букву по умолчанию
         return city[city.length - 1].toUpperCase();
     };
-
 
     const isCityValid = (city: string) => {
         return cityListData.includes(city);
@@ -95,33 +109,32 @@ export const PlayerPage: FC = () => {
         // Возвращаем результат сравнения
         return lastLetter === firstCityLetter;
     };
-    const handleAddCity = (city: string) => {
-        console.log(city, usedCities);
 
-        // Проверка, был ли город использован ранее
-        if (
-            !usedCities.includes(city) &&
-            isCityValid(city) &&
-            (isFirstTurn || validateLastLetter(city))
-        ) {
-            setUsedCities((prevCities) => [...prevCities, city]);
-            setPlayerCities((prevCities) => [...prevCities, city]);
-            setIsFirstTurn(false);
-            setLastLetter(getLastLetter(city).toUpperCase());
-            console.log(isFirstTurn, currentTurn, lastLetter);
-            switchTurn();
+    const handleAddCity = (inputCity: string) => {
+        const city = inputCity.trim();
 
-            setTimeout(() => {
-                handleComputerResponse(city);
-            }, 10)
+        if (!usedCities.includes(city)) {
+            if (!isCityValid(city)) {
+                setError('Недействительный город. NТакого города нет в базе :(.');
+            } else if (!isFirstTurn && !validateLastLetter(city)) {
+                setError(`Город должен начинаться с ${lastLetter}.`);
+            } else {
+                setUsedCities((prevCities) => [...prevCities, city]);
+                setPlayerCities((prevCities) => [...prevCities, city]);
+                setIsFirstTurn(false);
+                setLastLetter(getLastLetter(city).toUpperCase());
+                switchTurn();
 
+                setTimeout(() => {
+                    handleComputerResponse(city);
+                }, 10);
 
+                setError(''); // Clear the error
+            }
         } else {
-            // Город не прошел валидацию
-            console.log('Город не прошел валидацию');
+            setError('Город использовался ранее. Пожалуйста, войдите в новый город.');
         }
     };
-
 
     const handleComputerResponse = (city: string) => {
         const lastPlayerCityLetter = getLastLetter(city);
@@ -138,9 +151,9 @@ export const PlayerPage: FC = () => {
             if (computerCity) {
                 setUsedCities(prevCities => [...prevCities, computerCity]);
                 setComputerCities(prevCities => [...prevCities, computerCity]);
-                setCurrentTurn(Turn.Player);
                 setLastLetter(getLastLetter(computerCity));
                 switchTurn();
+                setCurrentTurn(Turn.Player);
             } else {
                 // Логика, если компьютер не может найти подходящий город
                 console.log('Компьютер не может найти подходящий город.');
@@ -162,7 +175,7 @@ export const PlayerPage: FC = () => {
         );
 
         // Сброс таймера на 120 секунд
-        setRemainingTime(120);
+        setRemainingTime(TIMER_DURATION_SECONDS);
 
         // Запуск нового таймера
         timerRef.current = setInterval(() => {
@@ -185,6 +198,7 @@ export const PlayerPage: FC = () => {
                 <CityInput
                     onSubmit={handleAddCity}
                     lastLetter={lastLetter}
+                    error={error} // Pass the error to CityInput
                 />
             </div>
         </>
