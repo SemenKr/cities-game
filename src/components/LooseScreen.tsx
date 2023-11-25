@@ -13,9 +13,7 @@ const LooseScreen: FC<LooseScreenProps> = ({onRestart}) => {
             <h1>You Loose!</h1>
             <Button
                 type={"primary"}
-                onClick={onRestart}
-                defaultBg={"#9b3cf3"}
-            >
+                onClick={onRestart}>
                 Попробуй еще!
             </Button>
         </div>
