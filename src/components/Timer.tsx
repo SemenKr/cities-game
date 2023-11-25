@@ -1,52 +1,49 @@
-import { FC, useEffect, useState, useRef } from 'react';
+import  {FC, useEffect, useState} from 'react';
 
 interface TimerProps {
-    onTimeout: () => void;
-    isPlayerTurn: boolean;
     minutes: number;
     seconds: number;
+    onTimeout?: () => void;
+    isPlayerTurn: boolean;
 }
 
-const Timer: FC<TimerProps> = ({  isPlayerTurn, minutes, seconds }) => {
-    const [isFlashing, setIsFlashing] = useState(false);
-    const tickingSoundRef = useRef<HTMLAudioElement | null>(null);
+const Timer: FC<TimerProps> = ({ minutes, seconds, onTimeout, isPlayerTurn }) => {
+    const [currentTime, setCurrentTime] = useState({
+        minutes,
+        seconds,
+    });
 
     useEffect(() => {
-        if (minutes === 0 && seconds <= 10) {
-            setIsFlashing(true);
-        } else {
-            setIsFlashing(false);
-        }
-    }, [minutes, seconds]);
+        const timerInterval = setInterval(() => {
+            if (currentTime.minutes === 0 && currentTime.seconds === 0) {
+                clearInterval(timerInterval);
+                onTimeout && onTimeout();
+            } else {
+                setCurrentTime((prevTime) => {
+                    if (prevTime.seconds === 0) {
+                        return {
+                            minutes: prevTime.minutes - 1,
+                            seconds: 59,
+                        };
+                    } else {
+                        return {
+                            minutes: prevTime.minutes,
+                            seconds: prevTime.seconds - 1,
+                        };
+                    }
+                });
+            }
+        }, 1000);
 
-    const playTickingSound = () => {
-        if (tickingSoundRef.current) {
-            tickingSoundRef.current.play();
-        }
-    };
+        return () => clearInterval(timerInterval);
+    }, [currentTime, onTimeout]);
 
-    const stopTickingSound = () => {
-        if (tickingSoundRef.current) {
-            tickingSoundRef.current.pause();
-            tickingSoundRef.current.currentTime = 0;
-        }
-    };
-
-    useEffect(() => {
-        // Play ticking sound when flashing and player's turn
-        if (isFlashing && isPlayerTurn) {
-            playTickingSound();
-        } else {
-            stopTickingSound();
-        }
-    }, [isFlashing, isPlayerTurn]);
+    const formatTimeUnit = (unit: number) => (unit < 10 ? `0${unit}` : unit);
 
     return (
-        <div style={{ color: isFlashing && isPlayerTurn ? 'red' : 'inherit' }}>
-            <p>
-                Осталось времени: {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
-            </p>
-            <audio ref={tickingSoundRef} src="src/assets/audio/tic.mp3" />
+        <div>
+            <span>{isPlayerTurn ? 'Your Turn: ' : 'Computer Turn: '}</span>
+            <span>{`${formatTimeUnit(currentTime.minutes)}:${formatTimeUnit(currentTime.seconds)}`}</span>
         </div>
     );
 };

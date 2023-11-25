@@ -1,9 +1,9 @@
-import {FC, useEffect, useRef, useState, useCallback, CSSProperties} from "react";
+import { FC, useEffect, useRef, useState, useCallback, CSSProperties } from "react";
 import Timer from "src/components/Timer.tsx";
 import Chat from "src/components/Chat.tsx";
 import CityInput from "src/components/CityInput.tsx";
 import cityListData from "src/data/CitiesListData.ts";
-import {Progress, Layout, Typography} from "antd";
+import { Progress, Layout, Typography } from "antd";
 
 const { Title } = Typography;
 
@@ -12,7 +12,7 @@ const { Header, Footer, Content } = Layout;
 const headerStyle: CSSProperties = {
     padding: 0,
     backgroundColor: 'inherit',
-    display:"flex",
+    display: "flex",
     alignItems: "center",
     justifyContent: "space-between"
 };
@@ -20,66 +20,50 @@ const contentStyle: CSSProperties = {
 
 };
 const footerStyle: CSSProperties = {
-
+    backgroundColor: 'inherit',
 };
 enum Turn {
     Player = 'Player',
     Computer = 'Computer',
 }
 
-const TIMER_DURATION_SECONDS = 60; // You can adjust the duration as needed
-
+const TIMER_DURATION_SECONDS = 120; // You can adjust the duration as needed
 
 export const PlayerPage: FC<{
     onGameOutcome: (outcome: 'win' | 'loose') => void
 }> = ({ onGameOutcome }) => {
-    const [playerCities, setPlayerCities] = useState<string[]>([]);
-    const [lastLetter, setLastLetter] = useState<string>(''); // Добавлено
-    const [computerCities, setComputerCities] = useState<string[]>([]);
+    const [lastLetter, setLastLetter] = useState<string>('');
     const [currentTurn, setCurrentTurn] = useState<Turn>(Turn.Player);
     const [isFirstTurn, setIsFirstTurn] = useState(true);
     const [usedCities, setUsedCities] = useState<string[]>([]);
-    const [remainingTime, setRemainingTime] = useState(TIMER_DURATION_SECONDS); // Время в секундах
+    const [remainingTime, setRemainingTime] = useState(TIMER_DURATION_SECONDS);
     const [error, setError] = useState<string>('');
     const [isCityInputDisabled, setIsCityInputDisabled] = useState(false);
-
-
+    const [timerKey, setTimerKey] = useState(0); // Add timerKey state
 
     const timerRef = useRef<number | undefined>(undefined);
     const handleTimeout = useCallback(() => {
-        console.log('Время вышло!');
-        // Проверьте текущий ход и установите результат игры соответствующим образом
         if (currentTurn === Turn.Player) {
-            // Player's turn, so the player loses
-            console.log('Вы проиграли!');
             onGameOutcome('loose');
         } else if (currentTurn === Turn.Computer) {
-            // Очередь компьютера, чтобы игрок выиграл
-            console.log('Вы победили!');
             onGameOutcome('win');
         }
-        // Дополнительная логика при необходимости
     }, [currentTurn, onGameOutcome]);
 
     useEffect(() => {
-        // Выполнится только при монтировании компонента
         setRemainingTime(TIMER_DURATION_SECONDS);
 
         return () => {
-            // Выполнится при размонтировании компонента (например, при завершении игры)
             clearInterval(timerRef.current);
         };
-    }, []); // Пустой массив зависимостей, чтобы useEffect сработал только при монтировании
+    }, [timerKey]); // Include timerKey in the dependency array
 
     useEffect(() => {
-        // Выполнится при каждом обновлении remainingTime
         if (remainingTime > 0) {
-            // Останавливаем текущий таймер, если он существует
             if (timerRef.current !== undefined) {
                 clearInterval(timerRef.current);
             }
 
-            // Запуск нового таймера
             timerRef.current = setInterval(() => {
                 setRemainingTime((prevTime) => prevTime - 1);
             }, 1000);
@@ -89,24 +73,20 @@ export const PlayerPage: FC<{
         }
 
         return () => {
-            // Выполнится при размонтировании компонента (например, при завершении игры)
             clearInterval(timerRef.current);
         };
-    }, [remainingTime, handleTimeout]);
+    }, [remainingTime, handleTimeout, timerKey]); // Include timerKey in the dependency array
 
     const getLastLetter = (city: string): string => {
-        // Проверяем, если city равен undefined, null или пустой строке
         if (!city) {
             console.error('Город не определен, равен null или является пустой строкой');
-            return ''; // или обработайте это так, как имеет смысл для вашего приложения
+            return '';
         }
 
-        // Проверяем, если город заканчивается на 'ъ' или 'ь' и имеет достаточную длину
         if (city.length > 1 && (city.endsWith('ъ') || city.endsWith('ь') || city.endsWith('ы'))) {
             return city[city.length - 2].toUpperCase();
         }
 
-        // Возвращаем последнюю букву по умолчанию
         return city[city.length - 1].toUpperCase();
     };
 
@@ -115,16 +95,12 @@ export const PlayerPage: FC<{
     };
 
     const validateLastLetter = (city: string) => {
-        // Проверяем, если city равен undefined, null или пустой строке
         if (!city) {
             console.error('Город не определен, равен null или является пустой строкой');
             return false;
         }
 
-        // Получаем первую букву города
         const firstCityLetter = city[0];
-
-        // Возвращаем результат сравнения
         return lastLetter === firstCityLetter;
     };
 
@@ -138,7 +114,6 @@ export const PlayerPage: FC<{
                 setError(`Город должен начинаться с ${lastLetter}.`);
             } else {
                 setUsedCities((prevCities) => [...prevCities, city]);
-                setPlayerCities((prevCities) => [...prevCities, city]);
                 setIsFirstTurn(false);
                 setLastLetter(getLastLetter(city).toUpperCase());
                 switchTurn();
@@ -147,7 +122,7 @@ export const PlayerPage: FC<{
                     handleComputerResponse(city);
                 }, 10);
 
-                setError(''); // Clear the error
+                setError('');
             }
         } else {
             setError('Город использовался ранее. Пожалуйста, войдите в новый город.');
@@ -156,57 +131,43 @@ export const PlayerPage: FC<{
 
     const handleComputerResponse = (city: string) => {
         const lastPlayerCityLetter = getLastLetter(city);
-        // Добавим задержку от 3 до 5 секунд
         const delay = Math.floor(Math.random() * (5000 - 3000 + 1) + 3000);
 
-        // Используем setTimeout для установки задержки
         setTimeout(() => {
-            // Найдем подходящий город для ответа компьютера
             const computerCity = cityListData.find(city => {
                 return city.startsWith(lastPlayerCityLetter.toUpperCase()) && !usedCities.includes(city);
             });
 
             if (computerCity) {
                 setUsedCities(prevCities => [...prevCities, computerCity]);
-                setComputerCities(prevCities => [...prevCities, computerCity]);
                 setLastLetter(getLastLetter(computerCity));
                 switchTurn();
                 setCurrentTurn(Turn.Player);
             } else {
-                // Логика, если компьютер не может найти подходящий город
                 console.log('Компьютер не может найти подходящий город.');
-                //handleGameOver(); // Можно вызвать завершение игры в этом случае
             }
         }, delay);
     };
 
-    // Внутри функции switchTurn
     const switchTurn = () => {
-        // Останавливаем текущий таймер, если он существует
         if (timerRef.current !== undefined) {
             clearInterval(timerRef.current);
         }
 
-        // Переключение хода между игроком и компьютером
         setCurrentTurn((prevTurn) => {
             const newTurn = prevTurn === Turn.Player ? Turn.Computer : Turn.Player;
 
-            // Сброс таймера на 120 секунд
             setRemainingTime(TIMER_DURATION_SECONDS);
 
             const isDisabled = newTurn === Turn.Computer;
-            console.log('isDisabled in PlayerPage:', isDisabled);
             setIsCityInputDisabled(isDisabled);
 
-            // Запуск нового таймера
-            timerRef.current = setInterval(() => {
-                setRemainingTime((prevTime) => prevTime - 1);
-            }, 1000);
+            // Increment the timerKey to trigger a Timer component remount
+            setTimerKey((prevKey) => prevKey + 1);
 
             return newTurn;
         });
     };
-
 
     return (
         <>
@@ -216,9 +177,13 @@ export const PlayerPage: FC<{
                         ? 'Сейчас ваша очередь'
                         : 'Сейчас ход компьютера'}
                 </Title>
-                <Timer onTimeout={handleTimeout} isPlayerTurn={true}
-                                            minutes={Math.floor(remainingTime / 60)}
-                                            seconds={remainingTime % 60}/>
+                <Timer
+                    key={timerKey}
+                    onTimeout={handleTimeout}
+                    isPlayerTurn={true}
+                    minutes={Math.floor(remainingTime / 60)}
+                    seconds={remainingTime % 60}
+                />
             </Header>
             <Progress
                 percent={(remainingTime / TIMER_DURATION_SECONDS) * 100}
@@ -227,14 +192,14 @@ export const PlayerPage: FC<{
             />
 
             <Content style={contentStyle}>
-                <Chat playerCities={playerCities} computerCities={computerCities}/>
+                <Chat usedCities={usedCities} />
             </Content>
             <Footer style={footerStyle} className="city-input">
                 <CityInput
                     onSubmit={handleAddCity}
                     lastLetter={lastLetter}
-                    error={error} // Pass the error to CityInput
-                    isDisabled={isCityInputDisabled}  // Передача состояния в CityInput
+                    error={error}
+                    isDisabled={isCityInputDisabled}
                 />
             </Footer>
         </>

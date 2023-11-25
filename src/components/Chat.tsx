@@ -1,29 +1,19 @@
-import { FC } from 'react';
+import {FC} from 'react';
+import styles from './Chat.module.scss';
 
 interface ChatProps {
-    playerCities: string[];
-    computerCities: string[];
+    usedCities: string[];
 }
 
-const Chat: FC<ChatProps> = ({ playerCities, computerCities }) => {
+const Chat: FC<ChatProps> = ({ usedCities }) => {
+
     return (
-        <div style={{ display: 'flex' }}>
-            <div style={{ flex: 1, marginRight: '10px' }}>
-                <h2>Города игрока:</h2>
+        <div className={styles.chat}>
                 <ul>
-                    {playerCities.map((city, index) => (
-                        <li key={index}>{city}</li>
+                    {usedCities.map((city, index) => (
+                        <li key={index} ><span >{city}</span></li>
                     ))}
                 </ul>
-            </div>
-            <div style={{ flex: 1, marginLeft: '10px' }}>
-                <h2>Города компьютера:</h2>
-                <ul>
-                    {computerCities.map((city, index) => (
-                        <li key={index}>{city}</li>
-                    ))}
-                </ul>
-            </div>
         </div>
     );
 };

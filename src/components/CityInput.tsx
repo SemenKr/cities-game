@@ -16,9 +16,6 @@ const CityInput: FC<CityInputProps> = ({onSubmit, lastLetter, error,isDisabled})
     const [showSuggestions, setShowSuggestions] = useState(false);
     const inputRef = useRef<InputRef>(null);
 
-    console.log('isDisabled in CityInput:', isDisabled); // Добавьте этот лог
-
-
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
     };

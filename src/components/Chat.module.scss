@@ -1,0 +1,38 @@
+.chat {
+  display: grid;
+  grid-template-columns: 1fr;
+  height: 18rem;
+  overflow: auto;
+
+  ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column-reverse;
+    padding: 1rem;
+    min-height: 19rem;
+
+    li {
+      align-self: flex-start;
+
+      margin-bottom: 2rem;
+
+      &:nth-child(even) {
+        align-self: flex-end;
+        align-items: end;
+
+        span {
+          padding: 6px 12px;
+          border-radius: 12px 12px 0 12px;
+          background: #8B5CF6;
+          color: #ffffff;
+        }
+      }
+    }
+
+    span {
+      padding: 6px 12px;
+      border-radius: 12px 12px 12px 0;
+      background: #F5F3FF;
+    }
+  }
+}

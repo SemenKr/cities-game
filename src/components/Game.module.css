@@ -3,7 +3,8 @@
     max-width: 800px;
     box-shadow: 3px 4px 9px 4px rgba(34, 60, 80, 0.2);
     border-radius: 2rem;
-    padding: 2rem 3rem   ;
+    padding: 2rem 3rem;
+    background-color: white;
 }
 @media (max-width: 900px) {
     .Container {
