@@ -2,6 +2,7 @@
 
 import { FC } from 'react';
 
+
 interface CitySuggestionsProps {
     suggestions: string[];
     onSelect: (selectedCity: string) => void;
@@ -9,9 +10,9 @@ interface CitySuggestionsProps {
 
 const CitySuggestions: FC<CitySuggestionsProps> = ({ suggestions, onSelect }) => {
     return (
-        <select onChange={(e) => onSelect(e.target.value)}>
-            <option value="" disabled selected>
-                Select a city
+        <select onChange={(e) => onSelect(e.target.value)} defaultValue="">
+            <option value="" disabled>
+                Вы уверены?
             </option>
             {suggestions.map((city) => (
                 <option key={city} value={city}>

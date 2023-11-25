@@ -1,8 +1,8 @@
 // CityInput
-import {ChangeEvent, FC, FormEvent, useState} from 'react';
+import {ChangeEvent, FC, FormEvent, useRef, useState} from 'react';
 import cityListData from "src/data/CitiesListData.ts";
 import CitySuggestions from "src/components/CitySuggestions.tsx";
-import {Button, Input, Space} from "antd";
+import {Button, Input, InputRef, Space} from "antd";
 
 interface CityInputProps {
     onSubmit: (city: string) => void;
@@ -10,15 +10,14 @@ interface CityInputProps {
     error: string;
 }
 
-const CityInput: FC<CityInputProps> = ({ onSubmit, lastLetter, error }) => {
+const CityInput: FC<CityInputProps> = ({onSubmit, lastLetter, error}) => {
     const [inputValue, setInputValue] = useState('');
     const [showSuggestions, setShowSuggestions] = useState(false);
-
+    const inputRef = useRef<InputRef>(null);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
     };
-
     const handleCitySelect = (selectedCity: string) => {
         setInputValue(selectedCity);
         setShowSuggestions(false);
@@ -33,24 +32,36 @@ const CityInput: FC<CityInputProps> = ({ onSubmit, lastLetter, error }) => {
         setInputValue('');
     };
 
+    const handleSubmit = () => {
+        onSubmit(inputValue);
+        setInputValue('');
+    };
+
     const filteredCities = cityListData.filter(
         (city) => city.startsWith(lastLetter.toUpperCase()) && !inputValue.toLowerCase().includes(city.toLowerCase())
     );
 
     return (
-        <form onSubmit={handleFormSubmit}>
+        <form onSubmit={handleFormSubmit} id={'cityForm'}>
 
             <Space.Compact style={{ width: '100%' }}>
                 <Input
                     value={inputValue}
                     onChange={handleInputChange}
-                    placeholder={`Enter a city starting with "${lastLetter}"`} />
-                <Button type="primary" >Submit</Button>
+                    placeholder={`Введите город на букву "${lastLetter}"`}
+                    ref={inputRef}
+                />
+                <Button type="primary" onClick={handleSubmit}>Submit</Button>
             </Space.Compact>
-            {error && <div style={{ color: 'red' }}>{error}</div>} {/* Display error message */}
-            <label>
-                Show Suggestions
-                <input type="checkbox" checked={showSuggestions} onChange={handleCheckboxChange}/>
+            {error && <div style={{ color: 'red' }}>{error}</div>}
+            <label htmlFor="showSuggestions">
+                Показать подсказку
+                <input
+                    id="showSuggestions"
+                    type="checkbox"
+                    checked={showSuggestions}
+                    onChange={handleCheckboxChange}
+                />
             </label>
             {showSuggestions &&
                 <CitySuggestions suggestions={filteredCities.slice(0, 10)} onSelect={handleCitySelect}/>}
