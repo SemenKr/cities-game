@@ -1,8 +1,11 @@
 import {FC, useState} from "react";
-import StartScreen from "src/components/StartScreen.tsx";
-import {PlayerPage} from "src/components/PlayerPage.tsx";
+import StartScreen from "src/Screens/StartScrean/StartScreen.tsx";
+import {PlayerPage} from "src/Screens/PlayerPage/PlayerPage.tsx";
 import WinScreen from "src/components/WinScreen.tsx";
 import LooseScreen from "src/components/LooseScreen.tsx";
+import {Layout} from "antd";
+import {Content} from "antd/es/layout/layout";
+import styles from './Game.module.css';
 
 
 export const Game: FC = () => {
@@ -24,18 +27,21 @@ export const Game: FC = () => {
 
 
     return (
-        <>
-            {gameStarted ? (
-                gameOutcome === 'win' ? (
-                    <WinScreen onRestart={onRestartGame} />
-                ) : gameOutcome === 'loose' ? (
-                    <LooseScreen onRestart={onRestartGame} />
+        <Layout className={styles.Container}>
+            <Content>
+                {gameStarted ? (
+                    gameOutcome === 'win' ? (
+                        <WinScreen onRestart={onRestartGame} />
+                    ) : gameOutcome === 'loose' ? (
+                        <LooseScreen onRestart={onRestartGame} />
+                    ) : (
+                        <PlayerPage onGameOutcome={handleGameOutcome} />
+                    )
                 ) : (
-                    <PlayerPage onGameOutcome={handleGameOutcome} />
-                )
-            ) : (
-                <StartScreen onStartGame={onStartGame} />
-            )}
-        </>
+                    <StartScreen onStartGame={onStartGame} />
+                )}
+            </Content>
+
+        </Layout>
     );
 };

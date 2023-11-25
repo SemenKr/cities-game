@@ -1,11 +1,27 @@
-import {FC, useEffect, useRef, useState, useCallback } from "react";
+import {FC, useEffect, useRef, useState, useCallback, CSSProperties} from "react";
 import Timer from "src/components/Timer.tsx";
 import Chat from "src/components/Chat.tsx";
 import CityInput from "src/components/CityInput.tsx";
 import cityListData from "src/data/CitiesListData.ts";
-import {Progress} from "antd";
+import {Progress, Layout, Typography} from "antd";
 
+const { Title } = Typography;
 
+const { Header, Footer, Content } = Layout;
+
+const headerStyle: CSSProperties = {
+    padding: 0,
+    backgroundColor: 'inherit',
+    display:"flex",
+    alignItems: "center",
+    justifyContent: "space-between"
+};
+const contentStyle: CSSProperties = {
+
+};
+const footerStyle: CSSProperties = {
+
+};
 enum Turn {
     Player = 'Player',
     Computer = 'Computer',
@@ -25,6 +41,8 @@ export const PlayerPage: FC<{
     const [usedCities, setUsedCities] = useState<string[]>([]);
     const [remainingTime, setRemainingTime] = useState(TIMER_DURATION_SECONDS); // Время в секундах
     const [error, setError] = useState<string>('');
+    const [isCityInputDisabled, setIsCityInputDisabled] = useState(false);
+
 
 
     const timerRef = useRef<number | undefined>(undefined);
@@ -75,7 +93,6 @@ export const PlayerPage: FC<{
             clearInterval(timerRef.current);
         };
     }, [remainingTime, handleTimeout]);
-
 
     const getLastLetter = (city: string): string => {
         // Проверяем, если city равен undefined, null или пустой строке
@@ -171,43 +188,55 @@ export const PlayerPage: FC<{
         }
 
         // Переключение хода между игроком и компьютером
-        setCurrentTurn((prevTurn) =>
-            prevTurn === Turn.Player ? Turn.Computer : Turn.Player
-        );
+        setCurrentTurn((prevTurn) => {
+            const newTurn = prevTurn === Turn.Player ? Turn.Computer : Turn.Player;
 
-        // Сброс таймера на 120 секунд
-        setRemainingTime(TIMER_DURATION_SECONDS);
+            // Сброс таймера на 120 секунд
+            setRemainingTime(TIMER_DURATION_SECONDS);
 
-        // Запуск нового таймера
-        timerRef.current = setInterval(() => {
-            setRemainingTime((prevTime) => prevTime - 1);
-        }, 1000);
+            const isDisabled = newTurn === Turn.Computer;
+            console.log('isDisabled in PlayerPage:', isDisabled);
+            setIsCityInputDisabled(isDisabled);
+
+            // Запуск нового таймера
+            timerRef.current = setInterval(() => {
+                setRemainingTime((prevTime) => prevTime - 1);
+            }, 1000);
+
+            return newTurn;
+        });
     };
 
 
     return (
         <>
-            <div className="header">
-                <h1>Сейчас ваша очередь</h1>
-                <Timer onTimeout={handleTimeout} isPlayerTurn={true} minutes={Math.floor(remainingTime / 60)}
-                       seconds={remainingTime % 60}/>
-            </div>
+            <Header style={headerStyle}>
+                <Title level={3}>
+                    {currentTurn === Turn.Player
+                        ? 'Сейчас ваша очередь'
+                        : 'Сейчас ход компьютера'}
+                </Title>
+                <Timer onTimeout={handleTimeout} isPlayerTurn={true}
+                                            minutes={Math.floor(remainingTime / 60)}
+                                            seconds={remainingTime % 60}/>
+            </Header>
             <Progress
                 percent={(remainingTime / TIMER_DURATION_SECONDS) * 100}
                 showInfo={false}
                 strokeColor={'#9e68d0'}
             />
 
-            <div className="chat">
+            <Content style={contentStyle}>
                 <Chat playerCities={playerCities} computerCities={computerCities}/>
-            </div>
-            <div className="city-input">
+            </Content>
+            <Footer style={footerStyle} className="city-input">
                 <CityInput
                     onSubmit={handleAddCity}
                     lastLetter={lastLetter}
                     error={error} // Pass the error to CityInput
+                    isDisabled={isCityInputDisabled}  // Передача состояния в CityInput
                 />
-            </div>
+            </Footer>
         </>
     );
 };

@@ -8,12 +8,16 @@ interface CityInputProps {
     onSubmit: (city: string) => void;
     lastLetter: string;
     error: string;
+    isDisabled: boolean;
 }
 
-const CityInput: FC<CityInputProps> = ({onSubmit, lastLetter, error}) => {
+const CityInput: FC<CityInputProps> = ({onSubmit, lastLetter, error,isDisabled}) => {
     const [inputValue, setInputValue] = useState('');
     const [showSuggestions, setShowSuggestions] = useState(false);
     const inputRef = useRef<InputRef>(null);
+
+    console.log('isDisabled in CityInput:', isDisabled); // Добавьте этот лог
+
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
@@ -50,8 +54,9 @@ const CityInput: FC<CityInputProps> = ({onSubmit, lastLetter, error}) => {
                     onChange={handleInputChange}
                     placeholder={`Введите город на букву "${lastLetter}"`}
                     ref={inputRef}
+                    disabled={isDisabled}
                 />
-                <Button type="primary" onClick={handleSubmit}>Submit</Button>
+                <Button disabled={isDisabled} type="primary" onClick={handleSubmit}>Submit</Button>
             </Space.Compact>
             {error && <div style={{ color: 'red' }}>{error}</div>}
             <label htmlFor="showSuggestions">

@@ -1,0 +1,22 @@
+.Container {
+    margin: auto;
+    max-width: 800px;
+    box-shadow: 3px 4px 9px 4px rgba(34, 60, 80, 0.2);
+    border-radius: 2rem;
+    padding: 2rem 3rem   ;
+}
+@media (max-width: 900px) {
+    .Container {
+        margin: auto 60px;
+    }
+}
+@media (max-width: 780px) {
+    .Container {
+        margin: auto 20px;
+    }
+}
+@media (max-width: 480px) {
+    .Container {
+        margin: auto;
+    }
+}

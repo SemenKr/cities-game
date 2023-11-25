@@ -1,5 +1,10 @@
 import {FC} from 'react';
-import {Button} from "antd";
+import {Button, Divider, Flex} from "antd";
+import styles from './StartScreen.module.scss';
+import { Typography } from 'antd';
+
+const { Paragraph } = Typography;
+
 interface StartScreenProps {
     onStartGame: () => void;
 }
@@ -7,12 +12,13 @@ interface StartScreenProps {
 const StartScreen: FC<StartScreenProps> = ({onStartGame}) => {
     return (
         <>
-            <div className="prose prose-sm start-screen">
-                <h1 className={'text-center text-base text-black font-normal'}>Игра в города на время</h1>
-                <p>
+            <div className={styles.startscreen}>
+                <h1 className={styles.startscreen__title}>Игра в города на время</h1>
+                <Divider />
+                <Paragraph strong >
                     Цель: Назвать как можно больше реальных городов.
-                </p>
-                <ul>
+                </Paragraph>
+                <ul  className={styles.startscreen__list}>
                     <li>Запрещается повторение городов.</li>
                     <li>Названий городов на&nbsp;твердый &laquo;ъ&raquo; и&nbsp;мягкий &laquo;ъ&raquo; знак нет. Из-за
                         этого&nbsp;бы пропускаем эту букву и&nbsp;игрок должен назвать город на&nbsp;букву стоящую перед
@@ -22,11 +28,15 @@ const StartScreen: FC<StartScreenProps> = ({onStartGame}) => {
                         не&nbsp;вводит слово он&nbsp;считается проигравшим
                     </li>
                 </ul>
-                <Button
-                    type={"primary"}
-                    onClick={onStartGame}>
-                    Начать игру
-                </Button >
+                <Flex justify={"center"} style={{paddingTop:'2rem'}} >
+                    <Button
+                        size='large'
+                        type={"primary"}
+                        onClick={onStartGame}>
+                        Начать игру
+                    </Button >
+                </Flex>
+
             </div>
         </>
     );

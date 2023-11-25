@@ -1,0 +1,23 @@
+.startscreen {
+
+  &__title {
+    text-align: center;
+    color:#8B5CF6;
+  }
+
+  &__list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.5rem;
+    li {
+      display: flex;
+
+      &:before {
+        content: '\2022';
+        color: #8B5CF6;
+        margin-right: .5rem;
+      }
+    }
+  }
+}

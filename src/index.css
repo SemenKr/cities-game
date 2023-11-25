@@ -1,15 +1,23 @@
-
-:root {
-  font-family:Helvetica, Arial, sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;700;800;900&family=Roboto+Condensed&family=Roboto:wght@400;500;700;900&display=swap');
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+.root-container {
+  font-family: Roboto , Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
+  height: 100vh;
   color-scheme: light dark;
   background-color: #E5E7EB;
+  display: flex;
+
+
+
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
