@@ -3,6 +3,8 @@ import {ChangeEvent, FC, FormEvent, useRef, useState} from 'react';
 import cityListData from "src/data/CitiesListData.ts";
 import CitySuggestions from "src/components/CitySuggestions.tsx";
 import {Button, Flex, Input, InputRef, Space, Switch} from "antd";
+import {SendOutlined} from "@ant-design/icons";
+
 
 interface CityInputProps {
     onSubmit: (city: string) => void;
@@ -56,9 +58,11 @@ const CityInput: FC<CityInputProps> = ({onSubmit, lastLetter, error,isDisabled,u
                     ref={inputRef}
                     disabled={isDisabled}
                 />
-                <Button disabled={isDisabled} type="primary" onClick={handleSubmit}>Submit</Button>
+                <Button disabled={isDisabled} type="primary" onClick={handleSubmit}>
+                        <SendOutlined  />
+                </Button>
             </Space.Compact>
-            {error && <div style={{ color: 'red' }}>{error}</div>}
+            {error && <div style={{color: 'red'}}>{error}</div>}
             <Flex vertical gap="middle" style={{padding: '2rem 0', minHeight: '3rem'}}>
                 <label htmlFor="showSuggestions" style={{display: 'flex', gap: '1rem', color: 'gray'
                 }}>
