@@ -200,6 +200,7 @@ export const PlayerPage: FC<{
                     lastLetter={lastLetter}
                     error={error}
                     isDisabled={isCityInputDisabled}
+                    usedCities={usedCities}
                 />
             </Footer>
         </>

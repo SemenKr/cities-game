@@ -9,9 +9,10 @@ interface CityInputProps {
     lastLetter: string;
     error: string;
     isDisabled: boolean;
+    usedCities: Array<string>
 }
 
-const CityInput: FC<CityInputProps> = ({onSubmit, lastLetter, error,isDisabled}) => {
+const CityInput: FC<CityInputProps> = ({onSubmit, lastLetter, error,isDisabled,usedCities}) => {
     const [inputValue, setInputValue] = useState('');
     const [showSuggestions, setShowSuggestions] = useState(false);
     const inputRef = useRef<InputRef>(null);
@@ -31,6 +32,9 @@ const CityInput: FC<CityInputProps> = ({onSubmit, lastLetter, error,isDisabled})
         e.preventDefault();
         onSubmit(inputValue);
         setInputValue('');
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
     };
 
     const handleSubmit = () => {
@@ -39,9 +43,8 @@ const CityInput: FC<CityInputProps> = ({onSubmit, lastLetter, error,isDisabled})
     };
 
     const filteredCities = cityListData.filter(
-        (city) => city.startsWith(lastLetter.toUpperCase()) && !inputValue.toLowerCase().includes(city.toLowerCase())
+        (city) => city.startsWith(lastLetter.toUpperCase()) && !usedCities.includes(city)
     );
-
     return (
         <form onSubmit={handleFormSubmit} id={'cityForm'}>
 
