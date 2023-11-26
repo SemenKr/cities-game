@@ -2,7 +2,7 @@
 import {ChangeEvent, FC, FormEvent, useRef, useState} from 'react';
 import cityListData from "src/data/CitiesListData.ts";
 import CitySuggestions from "src/components/CitySuggestions.tsx";
-import {Button, Input, InputRef, Space} from "antd";
+import {Button, Flex, Input, InputRef, Space, Switch} from "antd";
 
 interface CityInputProps {
     onSubmit: (city: string) => void;
@@ -59,17 +59,25 @@ const CityInput: FC<CityInputProps> = ({onSubmit, lastLetter, error,isDisabled,u
                 <Button disabled={isDisabled} type="primary" onClick={handleSubmit}>Submit</Button>
             </Space.Compact>
             {error && <div style={{ color: 'red' }}>{error}</div>}
-            <label htmlFor="showSuggestions">
-                Показать подсказку
-                <input
-                    id="showSuggestions"
-                    type="checkbox"
-                    checked={showSuggestions}
-                    onChange={handleCheckboxChange}
-                />
-            </label>
-            {showSuggestions &&
-                <CitySuggestions suggestions={filteredCities.slice(0, 10)} onSelect={handleCitySelect}/>}
+            <Flex vertical gap="middle" style={{padding: '2rem 0', minHeight: '3rem'}}>
+                <label htmlFor="showSuggestions" style={{display: 'flex', gap: '1rem', color: 'gray'
+                }}>
+                    Показать подсказку
+                    <Switch
+                        id="showSuggestions"
+                        checked={showSuggestions}
+                        onChange={handleCheckboxChange}
+                    />
+                </label>
+                <div style={{
+                    visibility: showSuggestions ? 'visible' : 'hidden',
+                    opacity: showSuggestions ? .8 : 0,
+                    transition: 'opacity 0.3s easy'
+                }}>
+                    <CitySuggestions suggestions={filteredCities.slice(0, 10)} onSelect={handleCitySelect}/>
+                </div>
+            </Flex>
+
         </form>
     );
 };

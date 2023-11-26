@@ -3,7 +3,7 @@ import Timer from "src/components/Timer.tsx";
 import Chat from "src/components/Chat.tsx";
 import CityInput from "src/components/CityInput.tsx";
 import cityListData from "src/data/CitiesListData.ts";
-import { Progress, Layout, Typography } from "antd";
+import {Progress, Layout, Typography, Tag} from "antd";
 
 const { Title } = Typography;
 const TIMER_DURATION_SECONDS = 120; // You can adjust the duration as needed
@@ -23,6 +23,8 @@ const contentStyle: CSSProperties = {
 };
 const footerStyle: CSSProperties = {
     backgroundColor: 'inherit',
+    padding: '2rem 0 0',
+    position: 'relative'
 };
 enum Turn {
     Player = 'Player',
@@ -202,6 +204,7 @@ export const PlayerPage: FC<{
                     isDisabled={isCityInputDisabled}
                     usedCities={usedCities}
                 />
+                <Tag style={{position:"absolute", bottom:'2rem', right: '0' }}  color="#9e68d0">{usedCities.length}</Tag>
             </Footer>
         </>
     );

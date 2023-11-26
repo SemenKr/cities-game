@@ -1,7 +1,5 @@
-// CitySuggestions.tsx
-
 import { FC } from 'react';
-
+import { AutoComplete } from "antd";
 
 interface CitySuggestionsProps {
     suggestions: string[];
@@ -9,17 +7,19 @@ interface CitySuggestionsProps {
 }
 
 const CitySuggestions: FC<CitySuggestionsProps> = ({ suggestions, onSelect }) => {
+    const dataSource = suggestions.map(city => ({ value: city }));
+
     return (
-        <select onChange={(e) => onSelect(e.target.value)} defaultValue="">
-            <option value="" disabled>
-                Вы уверены?
-            </option>
-            {suggestions.map((city) => (
-                <option key={city} value={city}>
-                    {city}
-                </option>
-            ))}
-        </select>
+        <AutoComplete
+            style={{ width: 200 }}
+            onSelect={(value) => onSelect(value)}
+            placeholder="Выберите город"
+            defaultValue=""
+            options={dataSource.map(city => ({ value: city.value }))}
+            filterOption={(inputValue, option) =>
+                option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+            }
+        />
     );
 };
 
