@@ -6,6 +6,8 @@ import cityListData from "src/data/CitiesListData.ts";
 import { Progress, Layout, Typography } from "antd";
 
 const { Title } = Typography;
+const TIMER_DURATION_SECONDS = 120; // You can adjust the duration as needed
+
 
 const { Header, Footer, Content } = Layout;
 
@@ -27,7 +29,6 @@ enum Turn {
     Computer = 'Computer',
 }
 
-const TIMER_DURATION_SECONDS = 120; // You can adjust the duration as needed
 
 export const PlayerPage: FC<{
     onGameOutcome: (outcome: 'win' | 'loose') => void
@@ -109,7 +110,7 @@ export const PlayerPage: FC<{
 
         if (!usedCities.includes(city)) {
             if (!isCityValid(city)) {
-                setError('Недействительный город. NТакого города нет в базе :(.');
+                setError('Недействительный город. Такого города нет в базе :(.');
             } else if (!isFirstTurn && !validateLastLetter(city)) {
                 setError(`Город должен начинаться с ${lastLetter}.`);
             } else {
@@ -180,7 +181,6 @@ export const PlayerPage: FC<{
                 <Timer
                     key={timerKey}
                     onTimeout={handleTimeout}
-                    isPlayerTurn={true}
                     minutes={Math.floor(remainingTime / 60)}
                     seconds={remainingTime % 60}
                 />
