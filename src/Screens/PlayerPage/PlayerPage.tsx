@@ -86,7 +86,7 @@ export const PlayerPage: FC<{
             return '';
         }
 
-        if (city.length > 1 && (city.endsWith('ъ') || city.endsWith('ь') || city.endsWith('ы'))) {
+        if (city.length > 1 && (city.endsWith('ъ') || city.endsWith('й') || city.endsWith('ь') || city.endsWith('ы'))) {
             return city[city.length - 2].toUpperCase();
         }
 
