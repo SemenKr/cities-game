@@ -6,7 +6,7 @@ import cityListData from "src/data/CitiesListData.ts";
 import {Progress, Layout, Typography, Tag} from "antd";
 
 const { Title } = Typography;
-const TIMER_DURATION_SECONDS = 120; // You can adjust the duration as needed
+const TIMER_DURATION_SECONDS = 10; // Вы можете настроить продолжительность по мере необходимости
 
 
 const { Header, Footer, Content } = Layout;
@@ -33,8 +33,9 @@ enum Turn {
 
 
 export const PlayerPage: FC<{
-    onGameOutcome: (outcome: 'win' | 'loose') => void
-}> = ({ onGameOutcome }) => {
+    onGameOutcome: (outcome: 'win' | 'loose') => void;
+    setUsedCitiesInGame: (cities: string[]) => void;
+}> = ({ onGameOutcome, setUsedCitiesInGame }) => {
     const [lastLetter, setLastLetter] = useState<string>('');
     const [currentTurn, setCurrentTurn] = useState<Turn>(Turn.Player);
     const [isFirstTurn, setIsFirstTurn] = useState(true);
@@ -116,7 +117,11 @@ export const PlayerPage: FC<{
             } else if (!isFirstTurn && !validateLastLetter(city)) {
                 setError(`Город должен начинаться с ${lastLetter}.`);
             } else {
-                setUsedCities((prevCities) => [...prevCities, city]);
+                setUsedCities((prevCities) => {
+                    const newCities = [...prevCities, city];
+                    setUsedCitiesInGame(newCities);  // Обновление usedCitiesInGame
+                    return newCities;
+                });
                 setIsFirstTurn(false);
                 setLastLetter(getLastLetter(city).toUpperCase());
                 switchTurn();
@@ -142,7 +147,11 @@ export const PlayerPage: FC<{
             });
 
             if (computerCity) {
-                setUsedCities(prevCities => [...prevCities, computerCity]);
+                setUsedCities((prevCities) => {
+                    const newCities = [...prevCities, city];
+                    setUsedCitiesInGame(newCities);  // Обновление usedCitiesInGame
+                    return newCities;
+                });
                 setLastLetter(getLastLetter(computerCity));
                 switchTurn();
                 setCurrentTurn(Turn.Player);
@@ -204,7 +213,7 @@ export const PlayerPage: FC<{
                     isDisabled={isCityInputDisabled}
                     usedCities={usedCities}
                 />
-                <Tag style={{position:"absolute", bottom:'2rem', right: '0' }}  color="#9e68d0">{usedCities.length}</Tag>
+                <Tag style={{position:"absolute", bottom:'3rem', right: '0' }}  color="#9e68d0">{usedCities.length}</Tag>
             </Footer>
         </>
     );

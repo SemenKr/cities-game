@@ -11,6 +11,7 @@ import styles from './Game.module.css';
 export const Game: FC = () => {
     const [gameStarted, setGameStarted] = useState(false);
     const [gameOutcome, setGameOutcome] = useState<'win' | 'loose' | null>(null);
+    const [usedCitiesInGame, setUsedCitiesInGame] = useState<string[]>([]);
     const onStartGame = () => {
         setGameStarted(true);
         setGameOutcome(null);
@@ -31,11 +32,17 @@ export const Game: FC = () => {
             <Content>
                 {gameStarted ? (
                     gameOutcome === 'win' ? (
-                        <WinScreen onRestart={onRestartGame} />
+                        <WinScreen
+                            onRestart={onRestartGame}
+                            usedCitiesInGame={usedCitiesInGame}
+                        />
                     ) : gameOutcome === 'loose' ? (
-                        <LooseScreen onRestart={onRestartGame} />
+                        <LooseScreen
+                            onRestart={onRestartGame}
+                            usedCitiesInGame={usedCitiesInGame}
+                        />
                     ) : (
-                        <PlayerPage onGameOutcome={handleGameOutcome} />
+                        <PlayerPage onGameOutcome={handleGameOutcome} setUsedCitiesInGame={setUsedCitiesInGame} />
                     )
                 ) : (
                     <StartScreen onStartGame={onStartGame} />
