@@ -6,7 +6,7 @@ import cityListData from "src/data/CitiesListData.ts";
 import {Progress, Layout, Typography, Tag} from "antd";
 
 const { Title } = Typography;
-const TIMER_DURATION_SECONDS = 10; // Вы можете настроить продолжительность по мере необходимости
+const TIMER_DURATION_SECONDS = 120; // Вы можете настроить продолжительность по мере необходимости
 
 
 const { Header, Footer, Content } = Layout;
