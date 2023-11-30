@@ -16,7 +16,11 @@ const headerStyle: CSSProperties = {
     backgroundColor: 'inherit',
     display: "flex",
     alignItems: "center",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+
+};
+const mobileHeaderStyle: CSSProperties = {
+    flexDirection: "column",
 };
 const contentStyle: CSSProperties = {
 
@@ -110,7 +114,6 @@ export const PlayerPage: FC<{
 
     const handleAddCity = (inputCity: string) => {
         const city = inputCity.trim();
-
         if (!usedCities.includes(city)) {
             if (!isCityValid(city)) {
                 setError('Недействительный город. Такого города нет в базе :(.');
@@ -145,10 +148,10 @@ export const PlayerPage: FC<{
             const computerCity = cityListData.find(city => {
                 return city.startsWith(lastPlayerCityLetter.toUpperCase()) && !usedCities.includes(city);
             });
-
+            console.log(computerCity);
             if (computerCity) {
                 setUsedCities((prevCities) => {
-                    const newCities = [...prevCities, city];
+                    const newCities = [...prevCities, computerCity];
                     setUsedCitiesInGame(newCities);  // Обновление usedCitiesInGame
                     return newCities;
                 });
@@ -183,7 +186,7 @@ export const PlayerPage: FC<{
 
     return (
         <>
-            <Header style={headerStyle}>
+            <Header style={window.innerWidth <= 480 ? {...headerStyle, ...mobileHeaderStyle} : headerStyle}>
                 <Title level={3}>
                     {currentTurn === Turn.Player
                         ? 'Сейчас ваша очередь'

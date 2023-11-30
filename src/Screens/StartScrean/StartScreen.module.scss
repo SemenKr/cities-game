@@ -2,7 +2,7 @@
 
   &__title {
     text-align: center;
-    color:#8B5CF6;
+    color: #8B5CF6;
   }
 
   &__list {
@@ -10,6 +10,11 @@
     display: flex;
     flex-direction: column;
     row-gap: 0.5rem;
+
+    @media (max-width: 480px) {
+      padding-left: .5rem;
+    }
+
     li {
       display: flex;
 
