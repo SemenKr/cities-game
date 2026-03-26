@@ -19,9 +19,16 @@ const CityInput: FC<CityInputProps> = ({onSubmit, lastLetter, error,isDisabled,u
     const [inputValue, setInputValue] = useState('');
     const [showSuggestions, setShowSuggestions] = useState(false);
     const inputRef = useRef<InputRef>(null);
+    const formRef = useRef<HTMLFormElement>(null);
+
+    const formatInputValue = (value: string) => {
+        return value.replace(/^(\s*)(\S)/, (_, spaces: string, firstChar: string) => {
+            return `${spaces}${firstChar.toUpperCase()}`;
+        });
+    };
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setInputValue(e.target.value);
+        setInputValue(formatInputValue(e.target.value));
     };
     const handleCitySelect = (selectedCity: string) => {
         setInputValue(selectedCity);
@@ -52,12 +59,13 @@ const CityInput: FC<CityInputProps> = ({onSubmit, lastLetter, error,isDisabled,u
     });
 
     return (
-        <form onSubmit={handleFormSubmit} id={'cityForm'}>
+        <form onSubmit={handleFormSubmit} id={'cityForm'} ref={formRef}>
 
             <Space.Compact style={{ width: '100%' }}>
                 <Input
                     value={inputValue}
                     onChange={handleInputChange}
+                    onPressEnter={() => formRef.current?.requestSubmit()}
                     placeholder={lastLetter
                         ? `Введите город на букву "${lastLetter}"`
                         : 'Введите любой город'}
