@@ -1,0 +1,55 @@
+.timer {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 8.5rem;
+  padding: 0.8rem 1rem;
+  border-radius: 1rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.96));
+  border: 1px solid #e2e8f0;
+  text-align: right;
+}
+
+.label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.value {
+  font-size: 1.65rem;
+  line-height: 1;
+  font-weight: 800;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.hint {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.critical {
+  border-color: rgba(239, 68, 68, 0.28);
+  background: linear-gradient(180deg, rgba(254, 242, 242, 0.98), rgba(255, 255, 255, 0.96));
+}
+
+.critical .value {
+  color: #dc2626;
+  transform: scale(1.03);
+}
+
+.critical .label,
+.critical .hint {
+  color: #b91c1c;
+}
+
+@media (max-width: 640px) {
+  .timer {
+    width: 100%;
+    min-width: 0;
+    text-align: left;
+  }
+}

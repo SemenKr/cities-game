@@ -3,6 +3,8 @@ import {Button, Divider, Flex, Segmented} from "antd";
 import styles from './StartScreen.module.scss';
 import { Typography } from 'antd';
 import { ComputerDifficulty } from "src/types/gameSettings.ts";
+import { PlayerStats } from "src/types/gameStats.ts";
+import { getAverageCitiesPerRound, getStreakLabel } from "src/lib/gameStats.ts";
 
 const { Paragraph } = Typography;
 
@@ -24,6 +26,7 @@ interface StartScreenProps {
     onTimerDurationChange: (duration: number) => void;
     computerDifficulty: ComputerDifficulty;
     onComputerDifficultyChange: (difficulty: ComputerDifficulty) => void;
+    playerStats: PlayerStats;
 }
 
 const StartScreen: FC<StartScreenProps> = ({
@@ -32,11 +35,21 @@ const StartScreen: FC<StartScreenProps> = ({
     onTimerDurationChange,
     computerDifficulty,
     onComputerDifficultyChange,
+    playerStats,
 }) => {
+    const averageCities = getAverageCitiesPerRound(playerStats);
+    const streakLabel = getStreakLabel(playerStats);
+
     return (
         <>
             <div className={styles.startscreen}>
-                <h1 className={styles.startscreen__title}>Игра в города на время</h1>
+                <div className={styles.startscreen__hero}>
+                    <div className={styles.startscreen__eyebrow}>Portfolio mode</div>
+                    <h1 className={styles.startscreen__title}>Игра в города на время</h1>
+                    <Paragraph className={styles.startscreen__intro}>
+                        Раундовая словесная дуэль с адаптивным таймером, подсказками и тремя уровнями сложности компьютера.
+                    </Paragraph>
+                </div>
                 <Divider />
                 <Paragraph strong >
                     Цель: Назвать как можно больше реальных городов.
@@ -71,9 +84,28 @@ const StartScreen: FC<StartScreenProps> = ({
                         />
                     </div>
                 </div>
-                <Flex justify={"center"} style={{paddingTop:'2rem'}} >
+                <div className={styles.startscreen__stats}>
+                    <div className={styles.startscreen__statCard}>
+                        <Paragraph strong>Сыграно раундов</Paragraph>
+                        <div className={styles.startscreen__statValue}>{playerStats.totalGames}</div>
+                    </div>
+                    <div className={styles.startscreen__statCard}>
+                        <Paragraph strong>Рекорд по городам</Paragraph>
+                        <div className={styles.startscreen__statValue}>{playerStats.bestRoundCities}</div>
+                    </div>
+                    <div className={styles.startscreen__statCard}>
+                        <Paragraph strong>Среднее за раунд</Paragraph>
+                        <div className={styles.startscreen__statValue}>{averageCities}</div>
+                    </div>
+                    <div className={styles.startscreen__statCard}>
+                        <Paragraph strong>Текущая серия</Paragraph>
+                        <div className={styles.startscreen__statSubvalue}>{streakLabel}</div>
+                    </div>
+                </div>
+                <Flex justify={"center"} className={styles.startscreen__actions} >
                     <Button
                         size='large'
+                        className={styles.startscreen__button}
                         type={"primary"}
                         onClick={onStartGame}>
                         Начать игру

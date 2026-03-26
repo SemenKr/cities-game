@@ -1,6 +1,8 @@
 import { FC } from 'react';
 import { Button, Flex, Tag, Typography } from 'antd';
 import styles from './ResultScreen.module.css';
+import { getAverageCitiesPerRound, getRoundStats, getStreakLabel } from "src/lib/gameStats.ts";
+import { PlayerStats } from "src/types/gameStats.ts";
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -12,6 +14,7 @@ interface ResultScreenProps {
     variant: 'win' | 'loose';
     reasonTitle: string;
     reasonDescription: string;
+    playerStats: PlayerStats;
 }
 
 const ResultScreen: FC<ResultScreenProps> = ({
@@ -22,20 +25,25 @@ const ResultScreen: FC<ResultScreenProps> = ({
     variant,
     reasonTitle,
     reasonDescription,
+    playerStats,
 }) => {
-    const totalCities = usedCitiesInGame.length;
-    const playerCities = Math.ceil(totalCities / 2);
-    const computerCities = Math.floor(totalCities / 2);
-    const lastCity = usedCitiesInGame[usedCitiesInGame.length - 1] ?? 'Нет данных';
+    const { totalCities, playerCities, computerCities, lastCity } = getRoundStats(usedCitiesInGame);
     const heroClassName = variant === 'win' ? styles.heroWin : styles.heroLoose;
     const tagColor = variant === 'win' ? 'success' : 'error';
+    const averageCities = getAverageCitiesPerRound(playerStats);
+    const streakLabel = getStreakLabel(playerStats);
 
     return (
         <div className={styles.screen}>
             <div className={`${styles.hero} ${heroClassName}`}>
-                <Tag className={styles.eyebrow} color={tagColor}>
-                    {variant === 'win' ? 'Победа' : 'Поражение'}
-                </Tag>
+                <div className={styles.heroTop}>
+                    <Tag className={styles.eyebrow} color={tagColor}>
+                        {variant === 'win' ? 'Победа' : 'Поражение'}
+                    </Tag>
+                    <div className={styles.heroBadge}>
+                        Раунд из {totalCities} город{totalCities === 1 ? 'а' : totalCities < 5 ? 'ов' : 'ов'}
+                    </div>
+                </div>
                 <Title level={2} className={styles.title}>{title}</Title>
                 <Paragraph className={styles.summary}>{subtitle}</Paragraph>
             </div>
@@ -61,9 +69,35 @@ const ResultScreen: FC<ResultScreenProps> = ({
                 <Paragraph className={styles.summary}>{reasonDescription}</Paragraph>
             </div>
 
+            <div className={styles.reasonCard}>
+                <Text type="secondary">Ваш общий прогресс</Text>
+                <div className={styles.metaStats}>
+                    <div className={styles.metaStat}>
+                        <span>Побед</span>
+                        <strong>{playerStats.wins}</strong>
+                    </div>
+                    <div className={styles.metaStat}>
+                        <span>Поражений</span>
+                        <strong>{playerStats.losses}</strong>
+                    </div>
+                    <div className={styles.metaStat}>
+                        <span>Рекорд</span>
+                        <strong>{playerStats.bestRoundCities}</strong>
+                    </div>
+                    <div className={styles.metaStat}>
+                        <span>Среднее</span>
+                        <strong>{averageCities}</strong>
+                    </div>
+                    <div className={styles.metaStatWide}>
+                        <span>Текущая серия</span>
+                        <strong>{streakLabel}</strong>
+                    </div>
+                </div>
+            </div>
+
             <div className={styles.lastCity}>
                 <Text type="secondary">Последний засчитанный город</Text>
-                <div className={styles.lastCityValue}>{lastCity}</div>
+                <div className={styles.lastCityValue}>{lastCity ?? 'Нет данных'}</div>
             </div>
 
             <Flex className={styles.actions}>

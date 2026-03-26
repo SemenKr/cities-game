@@ -1,11 +1,13 @@
 import { FC } from 'react';
 import ResultScreen from "src/components/ResultScreen.tsx";
 import { GameOutcomeReason } from "src/types/game.ts";
+import { PlayerStats } from "src/types/gameStats.ts";
 
 interface LooseScreenProps {
     onRestart: () => void;
     usedCitiesInGame: string[];
     reason: GameOutcomeReason;
+    playerStats: PlayerStats;
 }
 
 const getLooseReasonCopy = (reason: GameOutcomeReason) => {
@@ -24,7 +26,7 @@ const getLooseReasonCopy = (reason: GameOutcomeReason) => {
     };
 };
 
-const LooseScreen: FC<LooseScreenProps> = ({onRestart, usedCitiesInGame, reason}) => {
+const LooseScreen: FC<LooseScreenProps> = ({onRestart, usedCitiesInGame, reason, playerStats}) => {
     const copy = getLooseReasonCopy(reason);
 
     return (
@@ -36,6 +38,7 @@ const LooseScreen: FC<LooseScreenProps> = ({onRestart, usedCitiesInGame, reason}
             variant="loose"
             reasonTitle={copy.reasonTitle}
             reasonDescription={copy.reasonDescription}
+            playerStats={playerStats}
         />
     );
 };

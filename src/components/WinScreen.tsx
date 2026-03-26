@@ -1,12 +1,14 @@
 import { FC } from 'react';
 import ResultScreen from "src/components/ResultScreen.tsx";
 import { GameOutcomeReason } from "src/types/game.ts";
+import { PlayerStats } from "src/types/gameStats.ts";
 
 
 interface WinScreenProps {
     onRestart: () => void
     usedCitiesInGame: string[];
     reason: GameOutcomeReason;
+    playerStats: PlayerStats;
 }
 
 const getWinReasonCopy = (reason: GameOutcomeReason) => {
@@ -25,7 +27,7 @@ const getWinReasonCopy = (reason: GameOutcomeReason) => {
     };
 };
 
-const WinScreen: FC<WinScreenProps> = ({onRestart, usedCitiesInGame, reason}) => {
+const WinScreen: FC<WinScreenProps> = ({onRestart, usedCitiesInGame, reason, playerStats}) => {
     const copy = getWinReasonCopy(reason);
 
     return (
@@ -37,6 +39,7 @@ const WinScreen: FC<WinScreenProps> = ({onRestart, usedCitiesInGame, reason}) =>
             variant="win"
             reasonTitle={copy.reasonTitle}
             reasonDescription={copy.reasonDescription}
+            playerStats={playerStats}
         />
     );
 };

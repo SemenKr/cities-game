@@ -1,5 +1,6 @@
-import { CSSProperties, FC, useEffect, useRef } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import beepSound from 'src/assets/audio/tic.mp3';
+import styles from './Timer.module.scss';
 
 interface TimerProps {
     minutes: number;
@@ -8,6 +9,7 @@ interface TimerProps {
 
 const Timer: FC<TimerProps> = ({ minutes, seconds }) => {
     const audioRef = useRef<HTMLAudioElement | null>(null);
+    const isCritical = minutes === 0 && seconds < 10;
 
     useEffect(() => {
         const audio = audioRef.current;
@@ -28,17 +30,17 @@ const Timer: FC<TimerProps> = ({ minutes, seconds }) => {
     }, [minutes, seconds]);
 
     const formatTimeUnit = (unit: number) => (unit < 10 ? `0${unit}` : unit);
-
-    const timerStyle: CSSProperties = {
-        color: minutes === 0 && seconds < 10 ? 'red' : 'black',
-        fontSize: minutes === 0 && seconds < 10 ? '1.2em' : '1em',
-        transition: 'color 0.3s ease-in-out,font-size 0.3s ease-in-out',
-    };
+    const timerClassName = isCritical
+        ? `${styles.timer} ${styles.critical}`
+        : styles.timer;
 
     return (
-        <div >
-            <span>Осталось: </span>
-            <span style={timerStyle}>{`${formatTimeUnit(minutes)}:${formatTimeUnit(seconds)}`}</span>
+        <div className={timerClassName}>
+            <span className={styles.label}>Осталось на ход</span>
+            <span className={styles.value}>{`${formatTimeUnit(minutes)}:${formatTimeUnit(seconds)}`}</span>
+            <span className={styles.hint}>
+                {isCritical ? 'Нужно ответить прямо сейчас' : 'Таймер обновляется каждую секунду'}
+            </span>
             <audio ref={audioRef} src={beepSound} />
         </div>
     );

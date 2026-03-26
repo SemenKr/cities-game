@@ -4,14 +4,18 @@
     gap: 1.5rem;
     min-height: 28rem;
     justify-content: center;
-    padding: 1rem 0;
+    padding: 1rem 0 0.5rem;
 }
 
 .hero {
-    text-align: center;
+    display: grid;
+    gap: 0.75rem;
+    text-align: left;
     padding: 1.5rem;
     border-radius: 1.5rem;
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(255, 255, 255, 0.96));
+    background:
+        radial-gradient(circle at top right, rgba(192, 132, 252, 0.2), transparent 30%),
+        linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(255, 255, 255, 0.96));
 }
 
 .heroWin {
@@ -23,7 +27,28 @@
 }
 
 .eyebrow {
-    margin-bottom: 0.75rem;
+    margin-bottom: 0;
+}
+
+.heroTop {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.heroBadge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2rem;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(148, 163, 184, 0.24);
+    color: #475569;
+    font-size: 0.9rem;
+    font-weight: 600;
 }
 
 .title {
@@ -44,8 +69,9 @@
 .statCard {
     padding: 1rem;
     border-radius: 1rem;
-    background: #f8fafc;
+    background: linear-gradient(180deg, #ffffff, #f8fafc);
     border: 1px solid #e2e8f0;
+    min-height: 6rem;
 }
 
 .statLabel {
@@ -94,6 +120,40 @@
     color: #0f172a;
 }
 
+.metaStats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.metaStat,
+.metaStatWide {
+    display: grid;
+    gap: 0.2rem;
+    padding: 0.85rem 1rem;
+    border-radius: 0.85rem;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+}
+
+.metaStat span,
+.metaStatWide span {
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+.metaStat strong,
+.metaStatWide strong {
+    color: #0f172a;
+    font-size: 1rem;
+    line-height: 1.2;
+}
+
+.metaStatWide {
+    grid-column: 1 / -1;
+}
+
 .actions {
     justify-content: center;
 }
@@ -115,5 +175,18 @@
 
     .statCard {
         padding: 0.9rem 1rem;
+    }
+
+    .heroBadge {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .metaStats {
+        grid-template-columns: 1fr;
+    }
+
+    .metaStatWide {
+        grid-column: auto;
     }
 }

@@ -167,25 +167,42 @@ export const PlayerPage: FC<{
         : lastLetter
             ? `Введите город на букву "${lastLetter}".`
             : 'Начните игру с любого города.';
+    const timerPercent = (remainingTime / timerDurationSeconds) * 100;
+    const timerStrokeColor = remainingTime <= 10
+        ? '#ef4444'
+        : remainingTime <= 30
+            ? '#f59e0b'
+            : '#8b5cf6';
 
     return (
         <>
             <Header className={styles.header}>
-                <Title level={3} className={styles.title}>
-                    {currentTurn === Turn.Player
-                        ? 'Сейчас ваша очередь'
-                        : 'Сейчас ход компьютера'}
-                </Title>
-                <Timer
-                    minutes={Math.floor(remainingTime / 60)}
-                    seconds={remainingTime % 60}
-                />
+                <div className={styles.headerMain}>
+                    <Title level={3} className={styles.title}>
+                        {currentTurn === Turn.Player
+                            ? 'Сейчас ваша очередь'
+                            : 'Сейчас ход компьютера'}
+                    </Title>
+                    <Timer
+                        minutes={Math.floor(remainingTime / 60)}
+                        seconds={remainingTime % 60}
+                    />
+                </div>
+                <div className={styles.progressCard}>
+                    <div className={styles.progressMeta}>
+                        <span className={styles.progressLabel}>Прогресс текущего хода</span>
+                        <span className={styles.progressValue}>{remainingTime} сек</span>
+                    </div>
+                    <Progress
+                        className={styles.progress}
+                        percent={timerPercent}
+                        showInfo={false}
+                        strokeColor={timerStrokeColor}
+                        trailColor="#ede9fe"
+                        strokeLinecap="round"
+                    />
+                </div>
             </Header>
-            <Progress
-                percent={(remainingTime / timerDurationSeconds) * 100}
-                showInfo={false}
-                strokeColor={'#9e68d0'}
-            />
             <div className={styles.statusBar}>
                 <div className={styles.statusMeta}>
                     <div className={styles.statusText}>{statusText}</div>
