@@ -47,47 +47,55 @@ export const PlayerPage: FC<{
     const [remainingTime, setRemainingTime] = useState(TIMER_DURATION_SECONDS);
     const [error, setError] = useState<string>('');
     const [isCityInputDisabled, setIsCityInputDisabled] = useState(false);
-    const [timerKey, setTimerKey] = useState(0); // Add timerKey state
 
     const timerRef = useRef<number | undefined>(undefined);
+    const computerMoveTimeoutRef = useRef<number | undefined>(undefined);
+    const usedCitiesRef = useRef<string[]>([]);
+
     const handleTimeout = useCallback(() => {
         if (currentTurn === Turn.Player) {
             onGameOutcome('loose');
-        } else if (currentTurn === Turn.Computer) {
+        } else {
             onGameOutcome('win');
         }
     }, [currentTurn, onGameOutcome]);
 
     useEffect(() => {
-        setRemainingTime(TIMER_DURATION_SECONDS);
-
         return () => {
             clearInterval(timerRef.current);
+            clearTimeout(computerMoveTimeoutRef.current);
         };
-    }, [timerKey]); // Include timerKey in the dependency array
+    }, []);
 
     useEffect(() => {
-        if (remainingTime > 0) {
-            if (timerRef.current !== undefined) {
-                clearInterval(timerRef.current);
-            }
+        usedCitiesRef.current = usedCities;
+    }, [usedCities]);
 
-            timerRef.current = setInterval(() => {
-                setRemainingTime((prevTime) => prevTime - 1);
-            }, 1000);
-        } else {
-            clearInterval(timerRef.current);
-            handleTimeout();
-        }
+    useEffect(() => {
+        setRemainingTime(TIMER_DURATION_SECONDS);
+        setIsCityInputDisabled(currentTurn === Turn.Computer);
+        clearInterval(timerRef.current);
+
+        timerRef.current = window.setInterval(() => {
+            setRemainingTime((prevTime) => Math.max(prevTime - 1, 0));
+        }, 1000);
 
         return () => {
             clearInterval(timerRef.current);
         };
-    }, [remainingTime, handleTimeout, timerKey]); // Include timerKey in the dependency array
+    }, [currentTurn, handleTimeout]);
+
+    useEffect(() => {
+        if (remainingTime !== 0) {
+            return;
+        }
+
+        clearInterval(timerRef.current);
+        handleTimeout();
+    }, [remainingTime, handleTimeout]);
 
     const getLastLetter = (city: string): string => {
         if (!city) {
-            console.error('Город не определен, равен null или является пустой строкой');
             return '';
         }
 
@@ -104,7 +112,6 @@ export const PlayerPage: FC<{
 
     const validateLastLetter = (city: string) => {
         if (!city) {
-            console.error('Город не определен, равен null или является пустой строкой');
             return false;
         }
 
@@ -112,76 +119,65 @@ export const PlayerPage: FC<{
         return lastLetter === firstCityLetter;
     };
 
-    const handleAddCity = (inputCity: string) => {
-        const city = inputCity.trim();
-        if (!usedCities.includes(city)) {
-            if (!isCityValid(city)) {
-                setError('Недействительный город. Такого города нет в базе :(.');
-            } else if (!isFirstTurn && !validateLastLetter(city)) {
-                setError(`Город должен начинаться с ${lastLetter}.`);
-            } else {
-                setUsedCities((prevCities) => {
-                    const newCities = [...prevCities, city];
-                    setUsedCitiesInGame(newCities);  // Обновление usedCitiesInGame
-                    return newCities;
-                });
-                setIsFirstTurn(false);
-                setLastLetter(getLastLetter(city).toUpperCase());
-                switchTurn();
-
-                setTimeout(() => {
-                    handleComputerResponse(city);
-                }, 10);
-
-                setError('');
-            }
-        } else {
-            setError('Город использовался ранее. Пожалуйста, войдите в новый город.');
-        }
+    const syncUsedCities = (nextCities: string[]) => {
+        usedCitiesRef.current = nextCities;
+        setUsedCities(nextCities);
+        setUsedCitiesInGame(nextCities);
     };
 
     const handleComputerResponse = (city: string) => {
+        clearTimeout(computerMoveTimeoutRef.current);
+
         const lastPlayerCityLetter = getLastLetter(city);
         const delay = Math.floor(Math.random() * (5000 - 3000 + 1) + 3000);
 
-        setTimeout(() => {
-            const computerCity = cityListData.find(city => {
-                return city.startsWith(lastPlayerCityLetter.toUpperCase()) && !usedCities.includes(city);
+        computerMoveTimeoutRef.current = window.setTimeout(() => {
+            const computerCity = cityListData.find((candidate) => {
+                return candidate.startsWith(lastPlayerCityLetter) && !usedCitiesRef.current.includes(candidate);
             });
-            console.log(computerCity);
-            if (computerCity) {
-                setUsedCities((prevCities) => {
-                    const newCities = [...prevCities, computerCity];
-                    setUsedCitiesInGame(newCities);  // Обновление usedCitiesInGame
-                    return newCities;
-                });
-                setLastLetter(getLastLetter(computerCity));
-                switchTurn();
-                setCurrentTurn(Turn.Player);
-            } else {
-                console.log('Компьютер не может найти подходящий город.');
+
+            if (!computerCity) {
+                onGameOutcome('win');
+                return;
             }
+
+            const nextCities = [...usedCitiesRef.current, computerCity];
+            syncUsedCities(nextCities);
+            setLastLetter(getLastLetter(computerCity));
+            setCurrentTurn(Turn.Player);
         }, delay);
     };
 
-    const switchTurn = () => {
-        if (timerRef.current !== undefined) {
-            clearInterval(timerRef.current);
+    const handleAddCity = (inputCity: string) => {
+        const city = inputCity.trim();
+
+        if (!city) {
+            setError('Введите название города.');
+            return;
         }
 
-        setCurrentTurn((prevTurn) => {
-            const newTurn = prevTurn === Turn.Player ? Turn.Computer : Turn.Player;
+        if (usedCitiesRef.current.includes(city)) {
+            setError('Город использовался ранее. Пожалуйста, войдите в новый город.');
+            return;
+        }
 
-            setRemainingTime(TIMER_DURATION_SECONDS);
+        if (!isCityValid(city)) {
+            setError('Недействительный город. Такого города нет в базе :(.');
+            return;
+        }
 
-            const isDisabled = newTurn === Turn.Computer;
-            setIsCityInputDisabled(isDisabled);
+        if (!isFirstTurn && !validateLastLetter(city)) {
+            setError(`Город должен начинаться с ${lastLetter}.`);
+            return;
+        }
 
-            // Increment the timerKey to trigger a Timer component remount
-            setTimerKey((prevKey) => prevKey + 1);
-
-            return newTurn;
-        });
+        const nextCities = [...usedCitiesRef.current, city];
+        syncUsedCities(nextCities);
+        setIsFirstTurn(false);
+        setLastLetter(getLastLetter(city));
+        setError('');
+        setCurrentTurn(Turn.Computer);
+        handleComputerResponse(city);
     };
 
     return (
@@ -193,8 +189,6 @@ export const PlayerPage: FC<{
                         : 'Сейчас ход компьютера'}
                 </Title>
                 <Timer
-                    key={timerKey}
-                    onTimeout={handleTimeout}
                     minutes={Math.floor(remainingTime / 60)}
                     seconds={remainingTime % 60}
                 />
