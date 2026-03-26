@@ -1,5 +1,6 @@
-import {FC,} from 'react';
-import { AutoComplete } from "antd";
+import { FC } from 'react';
+import { Button } from "antd";
+import styles from './CitySuggestions.module.scss';
 
 interface CitySuggestionsProps {
     suggestions: string[];
@@ -7,15 +8,26 @@ interface CitySuggestionsProps {
 }
 
 const CitySuggestions: FC<CitySuggestionsProps> = ({ suggestions, onSelect }) => {
-    const dataSource = suggestions.map(city => ({ value: city }));
+    if (suggestions.length === 0) {
+        return (
+            <div className={styles.empty}>
+                Подходящих подсказок сейчас нет. Попробуйте изменить ввод или продолжить без подсказки.
+            </div>
+        );
+    }
 
     return (
-        <AutoComplete
-            style={{ width: '100%' }}
-            onSelect={(value) => onSelect(value)}
-            placeholder="Выберите город"
-            options={dataSource.map(city => ({ value: city.value }))}
-        />
+        <div className={styles.list}>
+            {suggestions.map((city) => (
+                <Button
+                    key={city}
+                    className={styles.suggestion}
+                    onClick={() => onSelect(city)}
+                >
+                    {city}
+                </Button>
+            ))}
+        </div>
     );
 };
 

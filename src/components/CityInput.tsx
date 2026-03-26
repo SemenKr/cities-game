@@ -3,8 +3,9 @@ import {ChangeEvent, FC, FormEvent, useRef, useState} from 'react';
 import cityListData from "src/data/CitiesListData.ts";
 import CitySuggestions from "src/components/CitySuggestions.tsx";
 import { filterAvailableCities } from "src/lib/cityRules.ts";
-import {Button, Flex, Input, InputRef, Space, Switch} from "antd";
+import {Button, Input, InputRef, Space, Switch, Tag} from "antd";
 import {SendOutlined} from "@ant-design/icons";
+import styles from './CityInput.module.scss';
 
 
 interface CityInputProps {
@@ -61,9 +62,9 @@ const CityInput: FC<CityInputProps> = ({onSubmit, onChangeInput, lastLetter, err
     });
 
     return (
-        <form onSubmit={handleFormSubmit} id={'cityForm'}>
+        <form onSubmit={handleFormSubmit} id={'cityForm'} className={styles.form}>
 
-            <Space.Compact style={{ width: '100%' }}>
+            <Space.Compact className={styles.submitRow}>
                 <Input
                     value={inputValue}
                     onChange={handleInputChange}
@@ -77,10 +78,23 @@ const CityInput: FC<CityInputProps> = ({onSubmit, onChangeInput, lastLetter, err
                         <SendOutlined  />
                 </Button>
             </Space.Compact>
-            {error && <div style={{color: 'red'}}>{error}</div>}
-            <Flex vertical gap="middle" style={{padding: '2rem 0', minHeight: '3rem'}}>
-                <label htmlFor="showSuggestions" style={{display: 'flex', gap: '1rem', color: 'gray'
-                }}>
+            {error && <p className={styles.error}>{error}</p>}
+            <div className={styles.suggestionsPanel}>
+                <div className={styles.suggestionsHeader}>
+                    <div className={styles.suggestionsMeta}>
+                        <div className={styles.suggestionsTitle}>
+                            Подсказки по ходу
+                            {lastLetter ? ` на букву "${lastLetter}"` : ''}
+                        </div>
+                        <div className={styles.suggestionsHint}>
+                            Показаны первые подходящие города с учетом уже использованных вариантов.
+                        </div>
+                    </div>
+                    <Tag color={showSuggestions ? 'processing' : 'default'}>
+                        {filteredCities.length} доступно
+                    </Tag>
+                </div>
+                <label htmlFor="showSuggestions" className={styles.suggestionsToggle}>
                     Показать подсказку
                     <Switch
                         id="showSuggestions"
@@ -88,14 +102,10 @@ const CityInput: FC<CityInputProps> = ({onSubmit, onChangeInput, lastLetter, err
                         onChange={handleCheckboxChange}
                     />
                 </label>
-                <div style={{
-                    visibility: showSuggestions ? 'visible' : 'hidden',
-                    opacity: showSuggestions ? .8 : 0,
-                    transition: 'opacity 0.3s ease'
-                }}>
+                <div className={showSuggestions ? undefined : styles.suggestionsPanelHidden}>
                     <CitySuggestions suggestions={filteredCities.slice(0, 10)} onSelect={handleCitySelect}/>
                 </div>
-            </Flex>
+            </div>
 
         </form>
     );
