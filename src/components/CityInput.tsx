@@ -9,17 +9,17 @@ import {SendOutlined} from "@ant-design/icons";
 
 interface CityInputProps {
     onSubmit: (city: string) => boolean;
+    onChangeInput: () => void;
     lastLetter: string;
     error: string;
     isDisabled: boolean;
     usedCities: Array<string>
 }
 
-const CityInput: FC<CityInputProps> = ({onSubmit, lastLetter, error,isDisabled,usedCities}) => {
+const CityInput: FC<CityInputProps> = ({onSubmit, onChangeInput, lastLetter, error,isDisabled,usedCities}) => {
     const [inputValue, setInputValue] = useState('');
     const [showSuggestions, setShowSuggestions] = useState(false);
     const inputRef = useRef<InputRef>(null);
-    const formRef = useRef<HTMLFormElement>(null);
 
     const formatInputValue = (value: string) => {
         return value.replace(/^(\s*)(\S)/, (_, spaces: string, firstChar: string) => {
@@ -29,10 +29,12 @@ const CityInput: FC<CityInputProps> = ({onSubmit, lastLetter, error,isDisabled,u
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setInputValue(formatInputValue(e.target.value));
+        onChangeInput();
     };
     const handleCitySelect = (selectedCity: string) => {
         setInputValue(selectedCity);
         setShowSuggestions(false);
+        onChangeInput();
     };
     const handleCheckboxChange = (checked: boolean) => {
         setShowSuggestions(checked);
@@ -59,13 +61,12 @@ const CityInput: FC<CityInputProps> = ({onSubmit, lastLetter, error,isDisabled,u
     });
 
     return (
-        <form onSubmit={handleFormSubmit} id={'cityForm'} ref={formRef}>
+        <form onSubmit={handleFormSubmit} id={'cityForm'}>
 
             <Space.Compact style={{ width: '100%' }}>
                 <Input
                     value={inputValue}
                     onChange={handleInputChange}
-                    onPressEnter={() => formRef.current?.requestSubmit()}
                     placeholder={lastLetter
                         ? `Введите город на букву "${lastLetter}"`
                         : 'Введите любой город'}

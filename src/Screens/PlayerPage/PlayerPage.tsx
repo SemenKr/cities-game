@@ -153,6 +153,12 @@ export const PlayerPage: FC<{
         return true;
     };
 
+    const handleInputChange = () => {
+        if (error) {
+            setError('');
+        }
+    };
+
     return (
         <>
             <Header className={styles.header}>
@@ -178,6 +184,7 @@ export const PlayerPage: FC<{
             <Footer className={styles.footer}>
                 <CityInput
                     onSubmit={handleAddCity}
+                    onChangeInput={handleInputChange}
                     lastLetter={lastLetter}
                     error={error}
                     isDisabled={isCityInputDisabled}
