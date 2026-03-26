@@ -1,3 +1,5 @@
+import { ComputerDifficulty } from "src/types/gameSettings.ts";
+
 const IGNORED_LAST_LETTERS = new Set(['ъ', 'ь', 'й', 'ы']);
 
 export const normalizeCity = (value: string) => {
@@ -75,10 +77,12 @@ export const chooseComputerCity = ({
     cities,
     requiredLetter,
     usedCities,
+    difficulty = 'hard',
 }: {
     cities: string[];
     requiredLetter: string;
     usedCities: string[];
+    difficulty?: ComputerDifficulty;
 }) => {
     const availableCities = filterAvailableCities({
         cities,
@@ -111,6 +115,14 @@ export const chooseComputerCity = ({
 
             return left.city.localeCompare(right.city, 'ru');
         });
+
+    if (difficulty === 'easy') {
+        return rankedCities[rankedCities.length - 1].city;
+    }
+
+    if (difficulty === 'medium') {
+        return rankedCities[Math.floor(rankedCities.length / 2)].city;
+    }
 
     return rankedCities[0].city;
 };

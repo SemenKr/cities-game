@@ -5,6 +5,7 @@ import CityInput from "src/components/CityInput.tsx";
 import cityListData from "src/data/CitiesListData.ts";
 import { chooseComputerCity, findCanonicalCity, getLastLetter, hasCityBeenUsed, matchesRequiredLetter, normalizeCity } from "src/lib/cityRules.ts";
 import { GameOutcome } from "src/types/game.ts";
+import { ComputerDifficulty } from "src/types/gameSettings.ts";
 import {Progress, Layout, Typography, Tag} from "antd";
 import styles from "./PlayerPage.module.scss";
 
@@ -22,7 +23,8 @@ export const PlayerPage: FC<{
     onGameOutcome: (outcome: GameOutcome) => void;
     setUsedCitiesInGame: (cities: string[]) => void;
     timerDurationSeconds: number;
-}> = ({ onGameOutcome, setUsedCitiesInGame, timerDurationSeconds }) => {
+    computerDifficulty: ComputerDifficulty;
+}> = ({ onGameOutcome, setUsedCitiesInGame, timerDurationSeconds, computerDifficulty }) => {
     const [lastLetter, setLastLetter] = useState<string>('');
     const [currentTurn, setCurrentTurn] = useState<Turn>(Turn.Player);
     const [isFirstTurn, setIsFirstTurn] = useState(true);
@@ -100,6 +102,7 @@ export const PlayerPage: FC<{
                 cities: cityListData,
                 requiredLetter: lastPlayerCityLetter,
                 usedCities: usedCitiesRef.current,
+                difficulty: computerDifficulty,
             });
 
             if (!computerCity) {

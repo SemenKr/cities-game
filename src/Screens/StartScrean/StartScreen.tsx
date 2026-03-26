@@ -2,6 +2,7 @@ import {FC} from 'react';
 import {Button, Divider, Flex, Segmented} from "antd";
 import styles from './StartScreen.module.scss';
 import { Typography } from 'antd';
+import { ComputerDifficulty } from "src/types/gameSettings.ts";
 
 const { Paragraph } = Typography;
 
@@ -11,16 +12,26 @@ const TIMER_OPTIONS = [
     { label: '3 мин', value: 180 },
 ];
 
+const DIFFICULTY_OPTIONS: { label: string; value: ComputerDifficulty }[] = [
+    { label: 'Легко', value: 'easy' },
+    { label: 'Нормально', value: 'medium' },
+    { label: 'Сложно', value: 'hard' },
+];
+
 interface StartScreenProps {
     onStartGame: () => void;
     timerDurationSeconds: number;
     onTimerDurationChange: (duration: number) => void;
+    computerDifficulty: ComputerDifficulty;
+    onComputerDifficultyChange: (difficulty: ComputerDifficulty) => void;
 }
 
 const StartScreen: FC<StartScreenProps> = ({
     onStartGame,
     timerDurationSeconds,
     onTimerDurationChange,
+    computerDifficulty,
+    onComputerDifficultyChange,
 }) => {
     return (
         <>
@@ -40,14 +51,25 @@ const StartScreen: FC<StartScreenProps> = ({
                         не&nbsp;вводит слово он&nbsp;считается проигравшим
                     </li>
                 </ul>
-                <div className={styles.startscreen__timer}>
-                    <Paragraph strong>Длительность хода</Paragraph>
-                    <Segmented
-                        block
-                        options={TIMER_OPTIONS}
-                        value={timerDurationSeconds}
-                        onChange={(value) => onTimerDurationChange(Number(value))}
-                    />
+                <div className={styles.startscreen__settings}>
+                    <div className={styles.startscreen__setting}>
+                        <Paragraph strong>Длительность хода</Paragraph>
+                        <Segmented
+                            block
+                            options={TIMER_OPTIONS}
+                            value={timerDurationSeconds}
+                            onChange={(value) => onTimerDurationChange(Number(value))}
+                        />
+                    </div>
+                    <div className={styles.startscreen__setting}>
+                        <Paragraph strong>Сложность компьютера</Paragraph>
+                        <Segmented
+                            block
+                            options={DIFFICULTY_OPTIONS}
+                            value={computerDifficulty}
+                            onChange={(value) => onComputerDifficultyChange(value as ComputerDifficulty)}
+                        />
+                    </div>
                 </div>
                 <Flex justify={"center"} style={{paddingTop:'2rem'}} >
                     <Button

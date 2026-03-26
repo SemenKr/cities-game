@@ -4,6 +4,7 @@ import {PlayerPage} from "src/Screens/PlayerPage/PlayerPage.tsx";
 import WinScreen from "src/components/WinScreen.tsx";
 import LooseScreen from "src/components/LooseScreen.tsx";
 import { GameOutcome } from "src/types/game.ts";
+import { ComputerDifficulty } from "src/types/gameSettings.ts";
 import {Layout} from "antd";
 import {Content} from "antd/es/layout/layout";
 import styles from './Game.module.css';
@@ -14,6 +15,7 @@ export const Game: FC = () => {
     const [gameOutcome, setGameOutcome] = useState<GameOutcome | null>(null);
     const [usedCitiesInGame, setUsedCitiesInGame] = useState<string[]>([]);
     const [timerDurationSeconds, setTimerDurationSeconds] = useState(120);
+    const [computerDifficulty, setComputerDifficulty] = useState<ComputerDifficulty>('medium');
     const onStartGame = () => {
         setGameStarted(true);
         setGameOutcome(null);
@@ -52,6 +54,7 @@ export const Game: FC = () => {
                             onGameOutcome={handleGameOutcome}
                             setUsedCitiesInGame={setUsedCitiesInGame}
                             timerDurationSeconds={timerDurationSeconds}
+                            computerDifficulty={computerDifficulty}
                         />
                     )
                 ) : (
@@ -59,6 +62,8 @@ export const Game: FC = () => {
                         onStartGame={onStartGame}
                         timerDurationSeconds={timerDurationSeconds}
                         onTimerDurationChange={setTimerDurationSeconds}
+                        computerDifficulty={computerDifficulty}
+                        onComputerDifficultyChange={setComputerDifficulty}
                     />
                 )}
             </Content>

@@ -82,8 +82,31 @@ describe('cityRules', () => {
                 cities: ['Армавир', 'Анапа', 'Астрахань', 'Норильск'],
                 requiredLetter: 'А',
                 usedCities: [],
+                difficulty: 'hard',
             }),
         ).toBe('Армавир');
+    });
+
+    it('chooses a balanced move on medium difficulty', () => {
+        expect(
+            chooseComputerCity({
+                cities: ['Армавир', 'Анапа', 'Астрахань', 'Норильск'],
+                requiredLetter: 'А',
+                usedCities: [],
+                difficulty: 'medium',
+            }),
+        ).toBe('Астрахань');
+    });
+
+    it('chooses the easiest reply for the player on easy difficulty', () => {
+        expect(
+            chooseComputerCity({
+                cities: ['Армавир', 'Анапа', 'Астрахань', 'Норильск'],
+                requiredLetter: 'А',
+                usedCities: [],
+                difficulty: 'easy',
+            }),
+        ).toBe('Анапа');
     });
 
     it('returns null when the computer has no valid move', () => {
