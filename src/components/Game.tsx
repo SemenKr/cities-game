@@ -13,6 +13,7 @@ export const Game: FC = () => {
     const [gameStarted, setGameStarted] = useState(false);
     const [gameOutcome, setGameOutcome] = useState<GameOutcome | null>(null);
     const [usedCitiesInGame, setUsedCitiesInGame] = useState<string[]>([]);
+    const [timerDurationSeconds, setTimerDurationSeconds] = useState(120);
     const onStartGame = () => {
         setGameStarted(true);
         setGameOutcome(null);
@@ -47,10 +48,18 @@ export const Game: FC = () => {
                             reason={gameOutcome.reason}
                         />
                     ) : (
-                        <PlayerPage onGameOutcome={handleGameOutcome} setUsedCitiesInGame={setUsedCitiesInGame} />
+                        <PlayerPage
+                            onGameOutcome={handleGameOutcome}
+                            setUsedCitiesInGame={setUsedCitiesInGame}
+                            timerDurationSeconds={timerDurationSeconds}
+                        />
                     )
                 ) : (
-                    <StartScreen onStartGame={onStartGame} />
+                    <StartScreen
+                        onStartGame={onStartGame}
+                        timerDurationSeconds={timerDurationSeconds}
+                        onTimerDurationChange={setTimerDurationSeconds}
+                    />
                 )}
             </Content>
 

@@ -9,8 +9,6 @@ import {Progress, Layout, Typography, Tag} from "antd";
 import styles from "./PlayerPage.module.scss";
 
 const { Title } = Typography;
-const TIMER_DURATION_SECONDS = 120; // Вы можете настроить продолжительность по мере необходимости
-
 
 const { Header, Footer, Content } = Layout;
 
@@ -23,12 +21,13 @@ enum Turn {
 export const PlayerPage: FC<{
     onGameOutcome: (outcome: GameOutcome) => void;
     setUsedCitiesInGame: (cities: string[]) => void;
-}> = ({ onGameOutcome, setUsedCitiesInGame }) => {
+    timerDurationSeconds: number;
+}> = ({ onGameOutcome, setUsedCitiesInGame, timerDurationSeconds }) => {
     const [lastLetter, setLastLetter] = useState<string>('');
     const [currentTurn, setCurrentTurn] = useState<Turn>(Turn.Player);
     const [isFirstTurn, setIsFirstTurn] = useState(true);
     const [usedCities, setUsedCities] = useState<string[]>([]);
-    const [remainingTime, setRemainingTime] = useState(TIMER_DURATION_SECONDS);
+    const [remainingTime, setRemainingTime] = useState(timerDurationSeconds);
     const [error, setError] = useState<string>('');
     const [isCityInputDisabled, setIsCityInputDisabled] = useState(false);
 
@@ -62,7 +61,7 @@ export const PlayerPage: FC<{
     }, [usedCities]);
 
     useEffect(() => {
-        setRemainingTime(TIMER_DURATION_SECONDS);
+        setRemainingTime(timerDurationSeconds);
         setIsCityInputDisabled(currentTurn === Turn.Computer);
         clearInterval(timerRef.current);
 
@@ -73,7 +72,7 @@ export const PlayerPage: FC<{
         return () => {
             clearInterval(timerRef.current);
         };
-    }, [currentTurn, handleTimeout]);
+    }, [currentTurn, handleTimeout, timerDurationSeconds]);
 
     useEffect(() => {
         if (remainingTime !== 0) {
@@ -180,7 +179,7 @@ export const PlayerPage: FC<{
                 />
             </Header>
             <Progress
-                percent={(remainingTime / TIMER_DURATION_SECONDS) * 100}
+                percent={(remainingTime / timerDurationSeconds) * 100}
                 showInfo={false}
                 strokeColor={'#9e68d0'}
             />
