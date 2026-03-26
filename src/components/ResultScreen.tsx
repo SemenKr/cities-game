@@ -10,6 +10,8 @@ interface ResultScreenProps {
     title: string;
     subtitle: string;
     variant: 'win' | 'loose';
+    reasonTitle: string;
+    reasonDescription: string;
 }
 
 const ResultScreen: FC<ResultScreenProps> = ({
@@ -18,6 +20,8 @@ const ResultScreen: FC<ResultScreenProps> = ({
     title,
     subtitle,
     variant,
+    reasonTitle,
+    reasonDescription,
 }) => {
     const totalCities = usedCitiesInGame.length;
     const playerCities = Math.ceil(totalCities / 2);
@@ -49,6 +53,12 @@ const ResultScreen: FC<ResultScreenProps> = ({
                     <Text className={styles.statLabel}>Ходов компьютера</Text>
                     <div className={styles.statValue}>{computerCities}</div>
                 </div>
+            </div>
+
+            <div className={styles.reasonCard}>
+                <Text type="secondary">Причина завершения</Text>
+                <div className={styles.reasonValue}>{reasonTitle}</div>
+                <Paragraph className={styles.summary}>{reasonDescription}</Paragraph>
             </div>
 
             <div className={styles.lastCity}>

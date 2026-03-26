@@ -63,10 +63,21 @@
 }
 
 .lastCity {
+    display: grid;
+    gap: 0.25rem;
     padding: 1rem 1.25rem;
     border-radius: 1rem;
     background: #faf5ff;
     border: 1px solid #e9d5ff;
+}
+
+.reasonCard {
+    display: grid;
+    gap: 0.25rem;
+    padding: 1rem 1.25rem;
+    border-radius: 1rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
 }
 
 .lastCityValue {
@@ -74,6 +85,13 @@
     font-size: 1.1rem;
     font-weight: 600;
     color: #6d28d9;
+}
+
+.reasonValue {
+    margin-top: 0.35rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #0f172a;
 }
 
 .actions {

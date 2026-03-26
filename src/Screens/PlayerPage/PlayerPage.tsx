@@ -4,6 +4,7 @@ import Chat from "src/components/Chat.tsx";
 import CityInput from "src/components/CityInput.tsx";
 import cityListData from "src/data/CitiesListData.ts";
 import { filterAvailableCities, findCanonicalCity, getLastLetter, hasCityBeenUsed, matchesRequiredLetter, normalizeCity } from "src/lib/cityRules.ts";
+import { GameOutcome } from "src/types/game.ts";
 import {Progress, Layout, Typography, Tag} from "antd";
 import styles from "./PlayerPage.module.scss";
 
@@ -20,7 +21,7 @@ enum Turn {
 
 
 export const PlayerPage: FC<{
-    onGameOutcome: (outcome: 'win' | 'loose') => void;
+    onGameOutcome: (outcome: GameOutcome) => void;
     setUsedCitiesInGame: (cities: string[]) => void;
 }> = ({ onGameOutcome, setUsedCitiesInGame }) => {
     const [lastLetter, setLastLetter] = useState<string>('');
@@ -37,9 +38,15 @@ export const PlayerPage: FC<{
 
     const handleTimeout = useCallback(() => {
         if (currentTurn === Turn.Player) {
-            onGameOutcome('loose');
+            onGameOutcome({
+                result: 'loose',
+                reason: 'player_timeout',
+            });
         } else {
-            onGameOutcome('win');
+            onGameOutcome({
+                result: 'win',
+                reason: 'computer_timeout',
+            });
         }
     }, [currentTurn, onGameOutcome]);
 
@@ -97,7 +104,10 @@ export const PlayerPage: FC<{
             });
 
             if (!computerCity) {
-                onGameOutcome('win');
+                onGameOutcome({
+                    result: 'win',
+                    reason: 'computer_no_city',
+                });
                 return;
             }
 
