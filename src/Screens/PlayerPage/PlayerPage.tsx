@@ -159,6 +159,13 @@ export const PlayerPage: FC<{
         }
     };
 
+    const isComputerThinking = currentTurn === Turn.Computer;
+    const statusText = isComputerThinking
+        ? `Компьютер подбирает ответ на букву "${lastLetter}".`
+        : lastLetter
+            ? `Введите город на букву "${lastLetter}".`
+            : 'Начните игру с любого города.';
+
     return (
         <>
             <Header className={styles.header}>
@@ -177,9 +184,32 @@ export const PlayerPage: FC<{
                 showInfo={false}
                 strokeColor={'#9e68d0'}
             />
+            <div className={styles.statusBar}>
+                <div className={styles.statusMeta}>
+                    <div className={styles.statusText}>{statusText}</div>
+                    <div className={styles.statusHint}>
+                        {isComputerThinking ? (
+                            <span className={styles.thinkingInline} aria-hidden="true">
+                                <span />
+                                <span />
+                                <span />
+                            </span>
+                        ) : (
+                            'Подсказки ниже учитывают уже использованные города и текущую букву.'
+                        )}
+                    </div>
+                </div>
+                <Tag color={isComputerThinking ? 'processing' : 'success'}>
+                    {isComputerThinking ? 'Компьютер думает' : 'Ваш ход'}
+                </Tag>
+            </div>
 
             <Content className={styles.content}>
-                <Chat usedCities={usedCities} />
+                <Chat
+                    usedCities={usedCities}
+                    isComputerThinking={isComputerThinking}
+                    pendingLetter={lastLetter}
+                />
             </Content>
             <Footer className={styles.footer}>
                 <CityInput

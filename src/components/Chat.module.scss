@@ -35,3 +35,58 @@
     }
   }
 }
+
+.typingItem {
+  align-self: flex-end;
+}
+
+.typingBubble {
+  display: grid;
+  gap: 0.45rem;
+  max-width: 18rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 12px 12px 0 12px;
+  background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+  color: #ffffff;
+
+  small {
+    opacity: 0.9;
+    line-height: 1.2;
+  }
+}
+
+.typingDots {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+
+  span {
+    width: 0.45rem;
+    height: 0.45rem;
+    padding: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.95);
+    animation: pulse 0.9s infinite ease-in-out;
+  }
+
+  span:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+
+  span:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.45;
+  }
+
+  50% {
+    transform: translateY(-0.2rem);
+    opacity: 1;
+  }
+}

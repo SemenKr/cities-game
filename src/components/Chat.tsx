@@ -3,9 +3,11 @@ import styles from './Chat.module.scss';
 
 interface ChatProps {
     usedCities: string[];
+    isComputerThinking: boolean;
+    pendingLetter: string;
 }
 
-const Chat: FC<ChatProps> = ({ usedCities }) => {
+const Chat: FC<ChatProps> = ({ usedCities, isComputerThinking, pendingLetter }) => {
     const chatRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -22,6 +24,20 @@ const Chat: FC<ChatProps> = ({ usedCities }) => {
                         <span>{city}</span>
                     </li>
                 ))}
+                {isComputerThinking && (
+                    <li className={styles.typingItem}>
+                        <div className={styles.typingBubble}>
+                            <div className={styles.typingDots} aria-hidden="true">
+                                <span />
+                                <span />
+                                <span />
+                            </div>
+                            <small>
+                                Компьютер думает{pendingLetter ? ` над городом на "${pendingLetter}"` : '...'}
+                            </small>
+                        </div>
+                    </li>
+                )}
             </ul>
         </div>
     );
