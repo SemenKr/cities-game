@@ -7,22 +7,14 @@ interface CitySuggestionsProps {
 }
 
 const CitySuggestions: FC<CitySuggestionsProps> = ({ suggestions, onSelect }) => {
-
-
     const dataSource = suggestions.map(city => ({ value: city }));
-
-
 
     return (
         <AutoComplete
-            style={{ width: 200 }}
+            style={{ width: '100%' }}
             onSelect={(value) => onSelect(value)}
             placeholder="Выберите город"
-            value={''}
             options={dataSource.map(city => ({ value: city.value }))}
-            filterOption={(inputValue, option) =>
-                option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-            }
         />
     );
 };

@@ -3,6 +3,7 @@ import Timer from "src/components/Timer.tsx";
 import Chat from "src/components/Chat.tsx";
 import CityInput from "src/components/CityInput.tsx";
 import cityListData from "src/data/CitiesListData.ts";
+import { filterAvailableCities, findCanonicalCity, getLastLetter, hasCityBeenUsed, matchesRequiredLetter, normalizeCity } from "src/lib/cityRules.ts";
 import {Progress, Layout, Typography, Tag} from "antd";
 
 const { Title } = Typography;
@@ -94,31 +95,6 @@ export const PlayerPage: FC<{
         handleTimeout();
     }, [remainingTime, handleTimeout]);
 
-    const getLastLetter = (city: string): string => {
-        if (!city) {
-            return '';
-        }
-
-        if (city.length > 1 && (city.endsWith('ъ') || city.endsWith('й') || city.endsWith('ь') || city.endsWith('ы'))) {
-            return city[city.length - 2].toUpperCase();
-        }
-
-        return city[city.length - 1].toUpperCase();
-    };
-
-    const isCityValid = (city: string) => {
-        return cityListData.includes(city);
-    };
-
-    const validateLastLetter = (city: string) => {
-        if (!city) {
-            return false;
-        }
-
-        const firstCityLetter = city[0];
-        return lastLetter === firstCityLetter;
-    };
-
     const syncUsedCities = (nextCities: string[]) => {
         usedCitiesRef.current = nextCities;
         setUsedCities(nextCities);
@@ -132,8 +108,10 @@ export const PlayerPage: FC<{
         const delay = Math.floor(Math.random() * (5000 - 3000 + 1) + 3000);
 
         computerMoveTimeoutRef.current = window.setTimeout(() => {
-            const computerCity = cityListData.find((candidate) => {
-                return candidate.startsWith(lastPlayerCityLetter) && !usedCitiesRef.current.includes(candidate);
+            const [computerCity] = filterAvailableCities({
+                cities: cityListData,
+                requiredLetter: lastPlayerCityLetter,
+                usedCities: usedCitiesRef.current,
             });
 
             if (!computerCity) {
@@ -149,26 +127,28 @@ export const PlayerPage: FC<{
     };
 
     const handleAddCity = (inputCity: string) => {
-        const city = inputCity.trim();
+        const normalizedInput = normalizeCity(inputCity);
+
+        if (!normalizedInput) {
+            setError('Введите название города.');
+            return false;
+        }
+
+        const city = findCanonicalCity(inputCity, cityListData);
 
         if (!city) {
-            setError('Введите название города.');
-            return;
-        }
-
-        if (usedCitiesRef.current.includes(city)) {
-            setError('Город использовался ранее. Пожалуйста, войдите в новый город.');
-            return;
-        }
-
-        if (!isCityValid(city)) {
             setError('Недействительный город. Такого города нет в базе :(.');
-            return;
+            return false;
         }
 
-        if (!isFirstTurn && !validateLastLetter(city)) {
+        if (hasCityBeenUsed(city, usedCitiesRef.current)) {
+            setError('Город использовался ранее. Пожалуйста, войдите в новый город.');
+            return false;
+        }
+
+        if (!isFirstTurn && !matchesRequiredLetter(city, lastLetter)) {
             setError(`Город должен начинаться с ${lastLetter}.`);
-            return;
+            return false;
         }
 
         const nextCities = [...usedCitiesRef.current, city];
@@ -178,6 +158,7 @@ export const PlayerPage: FC<{
         setError('');
         setCurrentTurn(Turn.Computer);
         handleComputerResponse(city);
+        return true;
     };
 
     return (

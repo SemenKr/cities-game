@@ -2,12 +2,13 @@
 import {ChangeEvent, FC, FormEvent, useRef, useState} from 'react';
 import cityListData from "src/data/CitiesListData.ts";
 import CitySuggestions from "src/components/CitySuggestions.tsx";
+import { filterAvailableCities } from "src/lib/cityRules.ts";
 import {Button, Flex, Input, InputRef, Space, Switch} from "antd";
 import {SendOutlined} from "@ant-design/icons";
 
 
 interface CityInputProps {
-    onSubmit: (city: string) => void;
+    onSubmit: (city: string) => boolean;
     lastLetter: string;
     error: string;
     isDisabled: boolean;
@@ -26,27 +27,30 @@ const CityInput: FC<CityInputProps> = ({onSubmit, lastLetter, error,isDisabled,u
         setInputValue(selectedCity);
         setShowSuggestions(false);
     };
-    const handleCheckboxChange = () => {
-        setShowSuggestions(!showSuggestions);
+    const handleCheckboxChange = (checked: boolean) => {
+        setShowSuggestions(checked);
     };
 
     const handleFormSubmit = (e: FormEvent) => {
         e.preventDefault();
-        onSubmit(inputValue);
-        setInputValue('');
+        const isSubmitted = onSubmit(inputValue);
+
+        if (isSubmitted) {
+            setInputValue('');
+        }
+
         if (inputRef.current) {
             inputRef.current.focus();
         }
     };
 
-    const handleSubmit = () => {
-        onSubmit(inputValue);
-        setInputValue('');
-    };
+    const filteredCities = filterAvailableCities({
+        cities: cityListData,
+        requiredLetter: lastLetter,
+        usedCities,
+        query: inputValue,
+    });
 
-    const filteredCities = cityListData.filter(
-        (city) => city.startsWith(lastLetter.toUpperCase()) && !usedCities.includes(city)
-    );
     return (
         <form onSubmit={handleFormSubmit} id={'cityForm'}>
 
@@ -54,11 +58,13 @@ const CityInput: FC<CityInputProps> = ({onSubmit, lastLetter, error,isDisabled,u
                 <Input
                     value={inputValue}
                     onChange={handleInputChange}
-                    placeholder={`Введите город на букву "${lastLetter}"`}
+                    placeholder={lastLetter
+                        ? `Введите город на букву "${lastLetter}"`
+                        : 'Введите любой город'}
                     ref={inputRef}
                     disabled={isDisabled}
                 />
-                <Button disabled={isDisabled} type="primary" onClick={handleSubmit}>
+                <Button disabled={isDisabled} type="primary" htmlType="submit">
                         <SendOutlined  />
                 </Button>
             </Space.Compact>
@@ -76,7 +82,7 @@ const CityInput: FC<CityInputProps> = ({onSubmit, lastLetter, error,isDisabled,u
                 <div style={{
                     visibility: showSuggestions ? 'visible' : 'hidden',
                     opacity: showSuggestions ? .8 : 0,
-                    transition: 'opacity 0.3s easy'
+                    transition: 'opacity 0.3s ease'
                 }}>
                     <CitySuggestions suggestions={filteredCities.slice(0, 10)} onSelect={handleCitySelect}/>
                 </div>
