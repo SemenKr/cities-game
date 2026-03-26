@@ -1,0 +1,49 @@
+.header {
+  padding: 0;
+  background: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.title {
+  margin: 0 !important;
+}
+
+.content {
+  padding-top: 1rem;
+}
+
+.footer {
+  background: inherit;
+  padding: 2rem 0 0;
+  position: relative;
+}
+
+.counter {
+  position: absolute;
+  right: 0;
+  bottom: 3rem;
+}
+
+@media (max-width: 480px) {
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .title {
+    font-size: 1.25rem !important;
+  }
+
+  .footer {
+    padding-top: 1.5rem;
+  }
+
+  .counter {
+    position: static;
+    margin-top: 1rem;
+    align-self: flex-start;
+  }
+}

@@ -1,10 +1,11 @@
-import { FC, useEffect, useRef, useState, useCallback, CSSProperties } from "react";
+import { FC, useEffect, useRef, useState, useCallback } from "react";
 import Timer from "src/components/Timer.tsx";
 import Chat from "src/components/Chat.tsx";
 import CityInput from "src/components/CityInput.tsx";
 import cityListData from "src/data/CitiesListData.ts";
 import { filterAvailableCities, findCanonicalCity, getLastLetter, hasCityBeenUsed, matchesRequiredLetter, normalizeCity } from "src/lib/cityRules.ts";
 import {Progress, Layout, Typography, Tag} from "antd";
+import styles from "./PlayerPage.module.scss";
 
 const { Title } = Typography;
 const TIMER_DURATION_SECONDS = 120; // Вы можете настроить продолжительность по мере необходимости
@@ -12,25 +13,6 @@ const TIMER_DURATION_SECONDS = 120; // Вы можете настроить пр
 
 const { Header, Footer, Content } = Layout;
 
-const headerStyle: CSSProperties = {
-    padding: 0,
-    backgroundColor: 'inherit',
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-
-};
-const mobileHeaderStyle: CSSProperties = {
-    flexDirection: "column",
-};
-const contentStyle: CSSProperties = {
-
-};
-const footerStyle: CSSProperties = {
-    backgroundColor: 'inherit',
-    padding: '2rem 0 0',
-    position: 'relative'
-};
 enum Turn {
     Player = 'Player',
     Computer = 'Computer',
@@ -163,8 +145,8 @@ export const PlayerPage: FC<{
 
     return (
         <>
-            <Header style={window.innerWidth <= 480 ? {...headerStyle, ...mobileHeaderStyle} : headerStyle}>
-                <Title level={3}>
+            <Header className={styles.header}>
+                <Title level={3} className={styles.title}>
                     {currentTurn === Turn.Player
                         ? 'Сейчас ваша очередь'
                         : 'Сейчас ход компьютера'}
@@ -180,10 +162,10 @@ export const PlayerPage: FC<{
                 strokeColor={'#9e68d0'}
             />
 
-            <Content style={contentStyle}>
+            <Content className={styles.content}>
                 <Chat usedCities={usedCities} />
             </Content>
-            <Footer style={footerStyle} className="city-input">
+            <Footer className={styles.footer}>
                 <CityInput
                     onSubmit={handleAddCity}
                     lastLetter={lastLetter}
@@ -191,7 +173,7 @@ export const PlayerPage: FC<{
                     isDisabled={isCityInputDisabled}
                     usedCities={usedCities}
                 />
-                <Tag style={{position:"absolute", bottom:'3rem', right: '0' }}  color="#9e68d0">{usedCities.length}</Tag>
+                <Tag className={styles.counter} color="#9e68d0">{usedCities.length}</Tag>
             </Footer>
         </>
     );

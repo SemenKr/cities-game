@@ -1,0 +1,101 @@
+.screen {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    min-height: 28rem;
+    justify-content: center;
+    padding: 1rem 0;
+}
+
+.hero {
+    text-align: center;
+    padding: 1.5rem;
+    border-radius: 1.5rem;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(255, 255, 255, 0.96));
+}
+
+.heroWin {
+    border: 1px solid rgba(22, 163, 74, 0.18);
+}
+
+.heroLoose {
+    border: 1px solid rgba(220, 38, 38, 0.18);
+}
+
+.eyebrow {
+    margin-bottom: 0.75rem;
+}
+
+.title {
+    margin: 0 !important;
+}
+
+.summary {
+    margin: 0 !important;
+    font-size: 1rem;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.statCard {
+    padding: 1rem;
+    border-radius: 1rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+
+.statLabel {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+.statValue {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: #0f172a;
+}
+
+.lastCity {
+    padding: 1rem 1.25rem;
+    border-radius: 1rem;
+    background: #faf5ff;
+    border: 1px solid #e9d5ff;
+}
+
+.lastCityValue {
+    margin-top: 0.35rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #6d28d9;
+}
+
+.actions {
+    justify-content: center;
+}
+
+@media (max-width: 640px) {
+    .screen {
+        min-height: auto;
+        gap: 1rem;
+    }
+
+    .hero {
+        padding: 1.25rem 1rem;
+        border-radius: 1rem;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .statCard {
+        padding: 0.9rem 1rem;
+    }
+}

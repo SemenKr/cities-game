@@ -15,10 +15,12 @@ export const Game: FC = () => {
     const onStartGame = () => {
         setGameStarted(true);
         setGameOutcome(null);
+        setUsedCitiesInGame([]);
     };
     const onRestartGame = () => {
         setGameStarted(false);
-        setGameOutcome(null)
+        setGameOutcome(null);
+        setUsedCitiesInGame([]);
     };
 
 
