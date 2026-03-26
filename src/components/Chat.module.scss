@@ -1,37 +1,46 @@
 .chat {
   display: grid;
   grid-template-columns: 1fr;
-  height: 18rem;
+  min-height: 18rem;
+  max-height: 22rem;
   overflow: auto;
+  border-radius: 1.25rem;
+  border: 1px solid #e2e8f0;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.98));
 
   ul {
     list-style: none;
     display: flex;
     flex-direction: column;
+    gap: 1rem;
+    margin: 0;
     padding: 1rem;
 
     li {
       align-self: flex-start;
-
-      margin-bottom: 2rem;
 
       &:nth-child(even) {
         align-self: flex-end;
         align-items: end;
 
         span {
-          padding: 6px 12px;
-          border-radius: 12px 12px 0 12px;
+          padding: 0.7rem 0.9rem;
+          border-radius: 14px 14px 0 14px;
           background: #8B5CF6;
           color: #ffffff;
+          box-shadow: 0 10px 24px rgba(139, 92, 246, 0.18);
         }
       }
     }
 
     span {
-      padding: 6px 12px;
-      border-radius: 12px 12px 12px 0;
+      display: inline-flex;
+      max-width: min(100%, 22rem);
+      padding: 0.7rem 0.9rem;
+      border-radius: 14px 14px 14px 0;
       background: #F5F3FF;
+      color: #312e81;
     }
   }
 }
@@ -52,6 +61,17 @@
   small {
     opacity: 0.9;
     line-height: 1.2;
+  }
+}
+
+@media (max-width: 640px) {
+  .chat {
+    min-height: 15rem;
+    max-height: 18rem;
+  }
+
+  .typingBubble {
+    max-width: 100%;
   }
 }
 

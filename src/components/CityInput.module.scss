@@ -5,6 +5,11 @@
 
 .submitRow {
   width: 100%;
+
+  :global(.ant-input),
+  :global(.ant-btn) {
+    height: 3rem;
+  }
 }
 
 .error {
@@ -17,10 +22,12 @@
 .suggestionsPanel {
   display: grid;
   gap: 0.85rem;
-  padding: 1rem;
+  padding: 1rem 1rem 1.05rem;
   border: 1px solid #e2e8f0;
-  border-radius: 1rem;
-  background: linear-gradient(180deg, #ffffff, #f8fafc);
+  border-radius: 1.2rem;
+  background:
+    radial-gradient(circle at top right, rgba(221, 214, 254, 0.55), transparent 24%),
+    linear-gradient(180deg, #ffffff, #f8fafc);
 }
 
 .suggestionsPanelHidden {
@@ -41,8 +48,8 @@
 
 .suggestionsTitle {
   color: #0f172a;
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 700;
 }
 
 .suggestionsHint {
@@ -53,6 +60,7 @@
 .suggestionsToggle {
   display: inline-flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.75rem;
   color: #475569;
   font-size: 0.9rem;
@@ -60,8 +68,19 @@
 }
 
 @media (max-width: 640px) {
+  .submitRow {
+    :global(.ant-input),
+    :global(.ant-btn) {
+      height: 2.8rem;
+    }
+  }
+
   .suggestionsHeader {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .suggestionsToggle {
+    width: 100%;
   }
 }
