@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+    chooseComputerCity,
     filterAvailableCities,
     findCanonicalCity,
     getLastLetter,
@@ -73,5 +74,25 @@ describe('cityRules', () => {
                 query: 'кар',
             }),
         ).toEqual(['Йошкар-Ола']);
+    });
+
+    it('chooses a computer move that leaves the player fewer replies', () => {
+        expect(
+            chooseComputerCity({
+                cities: ['Армавир', 'Анапа', 'Астрахань', 'Норильск'],
+                requiredLetter: 'А',
+                usedCities: [],
+            }),
+        ).toBe('Армавир');
+    });
+
+    it('returns null when the computer has no valid move', () => {
+        expect(
+            chooseComputerCity({
+                cities,
+                requiredLetter: 'Ю',
+                usedCities: [],
+            }),
+        ).toBeNull();
     });
 });

@@ -3,7 +3,7 @@ import Timer from "src/components/Timer.tsx";
 import Chat from "src/components/Chat.tsx";
 import CityInput from "src/components/CityInput.tsx";
 import cityListData from "src/data/CitiesListData.ts";
-import { filterAvailableCities, findCanonicalCity, getLastLetter, hasCityBeenUsed, matchesRequiredLetter, normalizeCity } from "src/lib/cityRules.ts";
+import { chooseComputerCity, findCanonicalCity, getLastLetter, hasCityBeenUsed, matchesRequiredLetter, normalizeCity } from "src/lib/cityRules.ts";
 import { GameOutcome } from "src/types/game.ts";
 import {Progress, Layout, Typography, Tag} from "antd";
 import styles from "./PlayerPage.module.scss";
@@ -97,7 +97,7 @@ export const PlayerPage: FC<{
         const delay = Math.floor(Math.random() * (5000 - 3000 + 1) + 3000);
 
         computerMoveTimeoutRef.current = window.setTimeout(() => {
-            const [computerCity] = filterAvailableCities({
+            const computerCity = chooseComputerCity({
                 cities: cityListData,
                 requiredLetter: lastPlayerCityLetter,
                 usedCities: usedCitiesRef.current,

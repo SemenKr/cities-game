@@ -70,3 +70,47 @@ export const filterAvailableCities = ({
         return true;
     });
 };
+
+export const chooseComputerCity = ({
+    cities,
+    requiredLetter,
+    usedCities,
+}: {
+    cities: string[];
+    requiredLetter: string;
+    usedCities: string[];
+}) => {
+    const availableCities = filterAvailableCities({
+        cities,
+        requiredLetter,
+        usedCities,
+    });
+
+    if (availableCities.length === 0) {
+        return null;
+    }
+
+    const rankedCities = availableCities
+        .map((city) => {
+            const nextUsedCities = [...usedCities, city];
+            const playerReplyCount = filterAvailableCities({
+                cities,
+                requiredLetter: getLastLetter(city),
+                usedCities: nextUsedCities,
+            }).length;
+
+            return {
+                city,
+                playerReplyCount,
+            };
+        })
+        .sort((left, right) => {
+            if (left.playerReplyCount !== right.playerReplyCount) {
+                return left.playerReplyCount - right.playerReplyCount;
+            }
+
+            return left.city.localeCompare(right.city, 'ru');
+        });
+
+    return rankedCities[0].city;
+};
