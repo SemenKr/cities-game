@@ -31,7 +31,6 @@ export const PlayerPage: FC<{
     const [usedCities, setUsedCities] = useState<string[]>([]);
     const [remainingTime, setRemainingTime] = useState(timerDurationSeconds);
     const [error, setError] = useState<string>('');
-    const [isCityInputDisabled, setIsCityInputDisabled] = useState(false);
 
     const timerRef = useRef<number | undefined>(undefined);
     const computerMoveTimeoutRef = useRef<number | undefined>(undefined);
@@ -63,8 +62,6 @@ export const PlayerPage: FC<{
     }, [usedCities]);
 
     useEffect(() => {
-        setRemainingTime(timerDurationSeconds);
-        setIsCityInputDisabled(currentTurn === Turn.Computer);
         clearInterval(timerRef.current);
 
         timerRef.current = window.setInterval(() => {
@@ -116,6 +113,7 @@ export const PlayerPage: FC<{
             const nextCities = [...usedCitiesRef.current, computerCity];
             syncUsedCities(nextCities);
             setLastLetter(getLastLetter(computerCity));
+            setRemainingTime(timerDurationSeconds);
             setCurrentTurn(Turn.Player);
         }, delay);
     };
@@ -150,6 +148,7 @@ export const PlayerPage: FC<{
         setIsFirstTurn(false);
         setLastLetter(getLastLetter(city));
         setError('');
+        setRemainingTime(timerDurationSeconds);
         setCurrentTurn(Turn.Computer);
         handleComputerResponse(city);
         return true;
@@ -162,6 +161,7 @@ export const PlayerPage: FC<{
     };
 
     const isComputerThinking = currentTurn === Turn.Computer;
+    const isCityInputDisabled = isComputerThinking;
     const statusText = isComputerThinking
         ? `Компьютер подбирает ответ на букву "${lastLetter}".`
         : lastLetter

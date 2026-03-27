@@ -46,19 +46,6 @@ export const Game: FC = () => {
         window.localStorage.setItem(PLAYER_STATS_STORAGE_KEY, JSON.stringify(playerStats));
     }, [playerStats]);
 
-    useEffect(() => {
-        if (!gameOutcome || isOutcomeRecordedRef.current) {
-            return;
-        }
-
-        setPlayerStats((previousStats) => updatePlayerStats({
-            previousStats,
-            result: gameOutcome.result,
-            usedCitiesInGame,
-        }));
-        isOutcomeRecordedRef.current = true;
-    }, [gameOutcome, usedCitiesInGame]);
-
     const onStartGame = () => {
         setGameStarted(true);
         setGameOutcome(null);
@@ -74,6 +61,15 @@ export const Game: FC = () => {
 
 
     const handleGameOutcome = (outcome: GameOutcome) => {
+        if (!isOutcomeRecordedRef.current) {
+            setPlayerStats((previousStats) => updatePlayerStats({
+                previousStats,
+                result: outcome.result,
+                usedCitiesInGame,
+            }));
+            isOutcomeRecordedRef.current = true;
+        }
+
         setGameOutcome(outcome);
     };
 
