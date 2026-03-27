@@ -1,8 +1,4 @@
-import {FC, useEffect, useRef, useState} from "react";
-import StartScreen from "src/Screens/StartScrean/StartScreen.tsx";
-import {PlayerPage} from "src/Screens/PlayerPage/PlayerPage.tsx";
-import WinScreen from "src/components/WinScreen.tsx";
-import LooseScreen from "src/components/LooseScreen.tsx";
+import {FC, lazy, Suspense, useEffect, useRef, useState} from "react";
 import { GameOutcome } from "src/types/game.ts";
 import { ComputerDifficulty } from "src/types/gameSettings.ts";
 import { PlayerStats } from "src/types/gameStats.ts";
@@ -11,6 +7,14 @@ import {Layout} from "antd";
 import {Content} from "antd/es/layout/layout";
 import styles from './Game.module.css';
 
+const StartScreen = lazy(() => import('src/Screens/StartScrean/StartScreen.tsx'));
+const PlayerPage = lazy(() =>
+    import('src/Screens/PlayerPage/PlayerPage.tsx').then((module) => ({
+        default: module.PlayerPage,
+    })),
+);
+const WinScreen = lazy(() => import('src/components/WinScreen.tsx'));
+const LooseScreen = lazy(() => import('src/components/LooseScreen.tsx'));
 
 export const Game: FC = () => {
     const loadPlayerStats = (): PlayerStats => {
@@ -77,39 +81,41 @@ export const Game: FC = () => {
     return (
         <Layout className={styles.Container}>
             <Content>
-                {gameStarted ? (
-                    gameOutcome?.result === 'win' ? (
-                        <WinScreen
-                            onRestart={onRestartGame}
-                            usedCitiesInGame={usedCitiesInGame}
-                            reason={gameOutcome.reason}
-                            playerStats={playerStats}
-                        />
-                    ) : gameOutcome?.result === 'loose' ? (
-                        <LooseScreen
-                            onRestart={onRestartGame}
-                            usedCitiesInGame={usedCitiesInGame}
-                            reason={gameOutcome.reason}
-                            playerStats={playerStats}
-                        />
+                <Suspense fallback={<div className={styles.loader}>Загружаем экран...</div>}>
+                    {gameStarted ? (
+                        gameOutcome?.result === 'win' ? (
+                            <WinScreen
+                                onRestart={onRestartGame}
+                                usedCitiesInGame={usedCitiesInGame}
+                                reason={gameOutcome.reason}
+                                playerStats={playerStats}
+                            />
+                        ) : gameOutcome?.result === 'loose' ? (
+                            <LooseScreen
+                                onRestart={onRestartGame}
+                                usedCitiesInGame={usedCitiesInGame}
+                                reason={gameOutcome.reason}
+                                playerStats={playerStats}
+                            />
+                        ) : (
+                            <PlayerPage
+                                onGameOutcome={handleGameOutcome}
+                                setUsedCitiesInGame={setUsedCitiesInGame}
+                                timerDurationSeconds={timerDurationSeconds}
+                                computerDifficulty={computerDifficulty}
+                            />
+                        )
                     ) : (
-                        <PlayerPage
-                            onGameOutcome={handleGameOutcome}
-                            setUsedCitiesInGame={setUsedCitiesInGame}
+                        <StartScreen
+                            onStartGame={onStartGame}
                             timerDurationSeconds={timerDurationSeconds}
+                            onTimerDurationChange={setTimerDurationSeconds}
                             computerDifficulty={computerDifficulty}
+                            onComputerDifficultyChange={setComputerDifficulty}
+                            playerStats={playerStats}
                         />
-                    )
-                ) : (
-                    <StartScreen
-                        onStartGame={onStartGame}
-                        timerDurationSeconds={timerDurationSeconds}
-                        onTimerDurationChange={setTimerDurationSeconds}
-                        computerDifficulty={computerDifficulty}
-                        onComputerDifficultyChange={setComputerDifficulty}
-                        playerStats={playerStats}
-                    />
-                )}
+                    )}
+                </Suspense>
             </Content>
 
         </Layout>

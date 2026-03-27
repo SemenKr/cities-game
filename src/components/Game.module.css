@@ -10,6 +10,15 @@
     border: 1px solid rgba(221, 214, 254, 0.92);
     backdrop-filter: blur(14px);
 }
+
+.loader {
+    display: grid;
+    place-items: center;
+    min-height: 20rem;
+    color: #5b21b6;
+    font-size: 1rem;
+    font-weight: 600;
+}
 @media (max-width: 900px) {
     .Container {
         padding: 1.75rem 2rem;
