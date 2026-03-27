@@ -68,6 +68,10 @@
 }
 
 @media (max-width: 640px) {
+  .form {
+    gap: 0.75rem;
+  }
+
   .submitRow {
     :global(.ant-input),
     :global(.ant-btn) {
@@ -75,12 +79,41 @@
     }
   }
 
+  .suggestionsPanel {
+    gap: 0.65rem;
+    padding: 0.8rem 0.85rem 0.85rem;
+    border-radius: 1rem;
+  }
+
   .suggestionsHeader {
     align-items: flex-start;
     flex-direction: column;
+    gap: 0.45rem;
   }
 
   .suggestionsToggle {
     width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .submitRow {
+    :global(.ant-input),
+    :global(.ant-btn) {
+      height: 2.55rem;
+    }
+  }
+
+  .error {
+    font-size: 0.82rem;
+  }
+
+  .suggestionsTitle {
+    font-size: 0.9rem;
+  }
+
+  .suggestionsHint,
+  .suggestionsToggle {
+    font-size: 0.8rem;
   }
 }

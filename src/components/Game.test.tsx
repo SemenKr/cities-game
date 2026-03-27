@@ -98,8 +98,8 @@ describe('Game flows', () => {
         fireEvent.click(screen.getByRole('button', { name: 'Начать новую игру' }));
         await flushLazyScreen();
 
-        const gamesStatCard = screen.getByText('Сыграно раундов').parentElement?.parentElement;
-        const streakStatCard = screen.getByText('Текущая серия').parentElement?.parentElement;
+        const gamesStatCard = screen.getByText('Сыграно').parentElement?.parentElement;
+        const streakStatCard = screen.getByText('Серия').parentElement?.parentElement;
 
         expect(gamesStatCard).toHaveTextContent('1');
         expect(streakStatCard).toHaveTextContent('1 побед подряд');

@@ -68,10 +68,49 @@
   .chat {
     min-height: 15rem;
     max-height: 18rem;
+
+    ul {
+      gap: 0.75rem;
+      padding: 0.85rem;
+
+      li:nth-child(even) span,
+      span {
+        padding: 0.6rem 0.75rem;
+        font-size: 0.9rem;
+      }
+    }
   }
 
   .typingBubble {
     max-width: 100%;
+    padding: 0.65rem 0.75rem;
+    font-size: 0.88rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .chat {
+    min-height: 12.5rem;
+    max-height: 15rem;
+    border-radius: 1rem;
+
+    ul {
+      gap: 0.55rem;
+      padding: 0.7rem;
+
+      span {
+        max-width: min(100%, 17rem);
+        border-radius: 12px 12px 12px 0;
+      }
+
+      li:nth-child(even) span {
+        border-radius: 12px 12px 0 12px;
+      }
+    }
+  }
+
+  .typingBubble {
+    gap: 0.35rem;
   }
 }
 

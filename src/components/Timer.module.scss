@@ -51,5 +51,26 @@
     width: 100%;
     min-width: 0;
     text-align: left;
+    padding: 0.7rem 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .timer {
+    gap: 0.15rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 0.85rem;
+  }
+
+  .label {
+    font-size: 0.68rem;
+  }
+
+  .value {
+    font-size: 1.35rem;
+  }
+
+  .hint {
+    font-size: 0.72rem;
   }
 }

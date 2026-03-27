@@ -161,25 +161,86 @@
 @media (max-width: 640px) {
     .screen {
         min-height: auto;
-        gap: 1rem;
+        gap: 0.8rem;
+        padding-top: 0.5rem;
     }
 
     .hero {
-        padding: 1.25rem 1rem;
+        gap: 0.55rem;
+        padding: 1rem 0.9rem;
         border-radius: 1rem;
     }
 
     .stats {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.55rem;
     }
 
     .statCard {
-        padding: 0.9rem 1rem;
+        min-height: 4.7rem;
+        padding: 0.75rem 0.7rem;
     }
 
     .heroBadge {
         width: 100%;
         justify-content: center;
+        min-height: 1.8rem;
+        padding: 0.25rem 0.6rem;
+        font-size: 0.82rem;
+    }
+
+    .metaStats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.55rem;
+    }
+
+    .metaStatWide {
+        grid-column: 1 / -1;
+    }
+
+    .summary {
+        font-size: 0.92rem;
+    }
+
+    .reasonCard,
+    .lastCity {
+        padding: 0.85rem 0.95rem;
+    }
+
+    .lastCityValue,
+    .reasonValue {
+        font-size: 0.95rem;
+    }
+
+    .metaStat,
+    .metaStatWide {
+        padding: 0.7rem 0.8rem;
+    }
+
+    .metaStat span,
+    .metaStatWide span,
+    .statLabel {
+        font-size: 0.75rem;
+    }
+
+    .metaStat strong,
+    .metaStatWide strong,
+    .statValue {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .heroTop {
+        gap: 0.5rem;
+    }
+
+    .title {
+        font-size: 1.45rem !important;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
     }
 
     .metaStats {
